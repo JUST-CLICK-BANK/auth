@@ -1,0 +1,17 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: auth
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres?characterEncoding=UTF-8&serverTimezone=Asia/Seoul
+    username: postgres
+    password: 1234
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+kakao:
+  client_id: 7c7b66bfebd17d00be7c61d798f0b6e9 # secret
+  redirect_uri: http://localhost:8081/login/redirect/kakao
