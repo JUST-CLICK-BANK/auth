@@ -1,10 +1,9 @@
 package com.click.auth.service;
 
-import com.click.auth.api.KaKaoApi;
+import com.click.auth.api.kakao.KaKaoApi;
 import com.click.auth.domain.dto.request.KakaoTokenRequest;
 import com.click.auth.domain.dto.response.KakaoTokenInfoResponse;
 import com.click.auth.domain.dto.response.KakaoTokenResponse;
-import com.click.auth.domain.dto.response.UserTokenResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,14 +13,14 @@ public class KakaoAuthServiceImpl implements KakaoAuthService{
     private final KaKaoApi kaKaoApi;
 
     @Override
-    public String getUserToken(KakaoTokenRequest req) {
-        KakaoTokenResponse kakaoToken = getToken(req);
+    public String getUserToken(String authCode) {
+        KakaoTokenResponse kakaoToken = getToken(authCode);
         KakaoTokenInfoResponse kakaoTokenInfo = getTokenInfo(kakaoToken);
-        return null;
+        return kakaoTokenInfo.id().toString();
     }
 
-    public KakaoTokenResponse getToken(KakaoTokenRequest req) {
-        return kaKaoApi.getKakaoToken(req);
+    public KakaoTokenResponse getToken(String authCode) {
+        return kaKaoApi.getKakaoToken(authCode);
     }
 
     public KakaoTokenInfoResponse getTokenInfo(KakaoTokenResponse token) {
