@@ -1,6 +1,5 @@
 package com.click.auth.controller;
 
-import com.click.auth.domain.dto.request.KakaoTokenRequest;
 import com.click.auth.service.KakaoAuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

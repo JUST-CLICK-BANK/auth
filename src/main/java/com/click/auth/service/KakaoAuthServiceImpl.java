@@ -1,7 +1,6 @@
 package com.click.auth.service;
 
 import com.click.auth.api.kakao.KaKaoApi;
-import com.click.auth.domain.dto.request.KakaoTokenRequest;
 import com.click.auth.domain.dto.response.KakaoTokenInfoResponse;
 import com.click.auth.domain.dto.response.KakaoTokenResponse;
 import lombok.RequiredArgsConstructor;
