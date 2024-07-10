@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -33,6 +34,9 @@ public class User {
 
     @Column(name = "USER_CREDIT_RANK", columnDefinition = "700")
     private Integer userCreditRank;
+
+    @Column(name = "USER_CREATED_AT", columnDefinition = "now()")
+    private LocalDateTime userCreatedAt;
 
     @Column(name = "USER_DISABLE", columnDefinition = "boolean default false")
     private Boolean isDisable;
