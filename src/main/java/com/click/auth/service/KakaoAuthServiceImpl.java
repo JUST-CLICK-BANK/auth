@@ -12,10 +12,10 @@ public class KakaoAuthServiceImpl implements KakaoAuthService{
     private final KaKaoApi kaKaoApi;
 
     @Override
-    public String getUserToken(String authCode) {
+    public UserCreateInitDataResponse getUserToken(String authCode) {
         KakaoTokenResponse kakaoToken = getToken(authCode);
         KakaoTokenInfoResponse kakaoTokenInfo = getTokenInfo(kakaoToken);
-        return kakaoTokenInfo.id().toString();
+        return UserCreateInitDataResponse.fromKakao(kakaoTokenInfo);
     }
 
     public KakaoTokenResponse getToken(String authCode) {

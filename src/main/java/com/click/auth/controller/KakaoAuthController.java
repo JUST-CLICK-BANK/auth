@@ -1,5 +1,6 @@
 package com.click.auth.controller;
 
+import com.click.auth.domain.dto.response.UserCreateInitDataResponse;
 import com.click.auth.service.KakaoAuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +12,7 @@ public class KakaoAuthController {
     private final KakaoAuthService kakaoAuthService;
 
     @GetMapping
-    public String getUserTokenByKakao(
+    public UserCreateInitDataResponse getUserTokenByKakao(
             @RequestParam(value = "code") String kakaoCode,
             @RequestParam(value = "isFront", defaultValue = "false") Boolean isFront
     ){
