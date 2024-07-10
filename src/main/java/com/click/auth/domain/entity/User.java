@@ -38,6 +38,9 @@ public class User {
     @Column(name = "USER_CREATED_AT", columnDefinition = "now()")
     private LocalDateTime userCreatedAt;
 
+    @Column(name = "USER_TOKEN_VERSION", nullable = false)
+    private Integer userTokenVersion;
+
     @Column(name = "USER_DISABLE", columnDefinition = "boolean default false")
     private Boolean isDisable;
 }
