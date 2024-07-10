@@ -14,4 +14,4 @@ spring:
 
 kakao:
   client_id: 7c7b66bfebd17d00be7c61d798f0b6e9 # secret
-  redirect_uri: http://localhost:8081/login/redirect/kakao
+  redirect_uri: http://192.168.0.16:8080/api/v1/auth/kakao
