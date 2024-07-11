@@ -23,9 +23,9 @@ public class KakaoAuthServiceImpl implements KakaoAuthService{
         KakaoTokenInfoResponse kakaoTokenInfo = getTokenInfo(kakaoToken);
         User userByIdentity = authService.findUserByIdentity(kakaoTokenInfo.id().toString(), UserIdentityType.KAKAO);
         if (userByIdentity == null) {
-            return SocialLoginResponse.fromKakao(kakaoTokenInfo, false);
+            return SocialLoginResponse.from(kakaoTokenInfo, false);
         }
-        return SocialLoginResponse.fromKakao(kakaoTokenInfo, true);
+        return SocialLoginResponse.from(kakaoTokenInfo, true);
     }
 
     public KakaoTokenResponse getToken(String authCode) {
