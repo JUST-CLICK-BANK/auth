@@ -32,15 +32,15 @@ public class User {
     @Column(name = "USER_SIMPLE_PASSWD", nullable = false)
     private String userPasswd;
 
-    @Column(name = "USER_CREDIT_RANK", columnDefinition = "700")
+    @Column(name = "USER_CREDIT_RANK", nullable = false)
     private Integer userCreditRank;
 
-    @Column(name = "USER_CREATED_AT", columnDefinition = "now()")
+    @Column(name = "USER_CREATED_AT", nullable = false)
     private LocalDateTime userCreatedAt;
 
     @Column(name = "USER_TOKEN_VERSION", nullable = false)
     private Integer userTokenVersion;
 
-    @Column(name = "USER_DISABLE", columnDefinition = "boolean default false")
+    @Column(name = "USER_DISABLE", nullable = false)
     private Boolean isDisable;
 }
