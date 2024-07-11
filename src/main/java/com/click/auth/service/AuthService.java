@@ -11,7 +11,7 @@ public interface AuthService {
     User findUserByIdentity(String identity, UserIdentityType type);
     User findUserByUuid(UUID userId);
     String createUser(UserCreateRequest req);
-    String generateAccessToken(String identity, UserIdentityType type, String passwd);
-    String generateUserToken(String accessToken);
+    String generateLoginToken(String identity, UserIdentityType type);
+    String generateUserToken(String accessToken, String password);
     UserInfoResponse parseUserToken(String userToken);
 }

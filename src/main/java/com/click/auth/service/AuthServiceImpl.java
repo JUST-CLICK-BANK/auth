@@ -10,7 +10,6 @@ import com.click.auth.util.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -22,7 +21,7 @@ public class AuthServiceImpl implements AuthService{
     @Override
     public User findUserByIdentity(String identity, UserIdentityType type) {
         return userRepository.findByUserIdentityAndUserIdentityType(identity, type)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElse(null);
     }
 
     @Override
@@ -32,28 +31,19 @@ public class AuthServiceImpl implements AuthService{
 
     @Override
     public String createUser(UserCreateRequest req) {
-        User user = new User(
-                null,
-                req.identity(),
-                req.type(),
-                req.nickname(),
-                req.passwd(),
-                null,
-                null,
-                1,
-                null
-        );
+        User user = req.toEntity();
         userRepository.save(user);
         return jwtUtils.createLoginToken(LoginTokenDto.from(user));
     }
 
     @Override
-    public String generateAccessToken(String identity, UserIdentityType type, String passwd) {
-        return "";
+    public String generateLoginToken(String identity, UserIdentityType type) {
+        User user = findUserByIdentity(identity, type);
+        return jwtUtils.createLoginToken(LoginTokenDto.from(user));
     }
 
     @Override
-    public String generateUserToken(String accessToken) {
+    public String generateUserToken(String accessToken, String password) {
         return "";
     }
 
