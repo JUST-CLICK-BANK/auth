@@ -1,8 +1,8 @@
 package com.click.auth.service;
 
-import com.click.auth.domain.dto.LoginTokenDto;
+import com.click.auth.domain.dto.response.LoginTokenResponse;
 import com.click.auth.domain.dto.request.UserCreateRequest;
-import com.click.auth.domain.dto.response.UserInfoResponse;
+import com.click.auth.domain.dto.response.UserTokenResponse;
 import com.click.auth.domain.entity.User;
 import com.click.auth.domain.repository.UserRepository;
 import com.click.auth.domain.type.UserIdentityType;
@@ -25,7 +25,7 @@ public class AuthServiceImpl implements AuthService{
     }
 
     @Override
-    public User findUserByUuid(UUID userId) {
+    public User findUserByCode(UUID userId) {
         return null;
     }
 
@@ -33,22 +33,30 @@ public class AuthServiceImpl implements AuthService{
     public String createUser(UserCreateRequest req) {
         User user = req.toEntity();
         userRepository.save(user);
-        return jwtUtils.createLoginToken(LoginTokenDto.from(user));
+        return jwtUtils.createLoginToken(LoginTokenResponse.from(user));
     }
 
     @Override
     public String generateLoginToken(String identity, UserIdentityType type) {
         User user = findUserByIdentity(identity, type);
-        return jwtUtils.createLoginToken(LoginTokenDto.from(user));
+        return jwtUtils.createLoginToken(LoginTokenResponse.from(user));
     }
 
     @Override
     public String generateUserToken(String accessToken, String password) {
-        return "";
+        LoginTokenResponse loginToken = jwtUtils.parseLoginToken(accessToken);
+        User user = userRepository.findById(loginToken.uuid()).orElseThrow(IllegalArgumentException::new);
+        if (!user.getUserPasswd().equals(password)) {
+            throw new IllegalArgumentException();
+        }
+        if (!user.getUserTokenVersion().equals(loginToken.version())) {
+            throw new IllegalArgumentException();
+        }
+        return jwtUtils.createUserToken(user);
     }
 
     @Override
-    public UserInfoResponse parseUserToken(String userToken) {
-        return null;
+    public UserTokenResponse parseUserToken(String userToken) {
+        return jwtUtils.parseUserToken(userToken);
     }
 }
