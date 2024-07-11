@@ -1,6 +1,7 @@
 package com.click.auth.controller;
 
 import com.click.auth.domain.dto.request.UserCreateRequest;
+import com.click.auth.domain.dto.response.UserTokenResponse;
 import com.click.auth.domain.type.UserIdentityType;
 import com.click.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -36,5 +37,10 @@ public class AuthController {
             @RequestParam("password") String password
     ){
         return authService.generateUserToken(token, password);
+    }
+
+    @GetMapping("/token/{userToken}")
+    public UserTokenResponse getUserTokenInfo(@PathVariable("userToken") String userToken) {
+        return authService.parseUserToken(userToken);
     }
 }
