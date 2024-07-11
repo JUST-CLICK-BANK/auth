@@ -8,7 +8,7 @@ public record SocialLoginResponse(
         String identity,
         UserIdentityType type
 ) {
-    public static SocialLoginResponse fromKakao(KakaoTokenInfoResponse res, boolean isAleady) {
+    public static SocialLoginResponse from(KakaoTokenInfoResponse res, boolean isAleady) {
         return new SocialLoginResponse(
                 isAleady,
                 res.id().toString(),
