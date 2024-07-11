@@ -26,6 +26,12 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserIdentityType userIdentityType;
 
+    @Column(name = "USER_CODE", nullable = false)
+    private String userCode;
+
+    @Column(name = "USER_PROFILE_IMG")
+    private String userImg;
+
     @Column(name = "USER_NICK_NAME", nullable = false)
     private String userNickName;
 

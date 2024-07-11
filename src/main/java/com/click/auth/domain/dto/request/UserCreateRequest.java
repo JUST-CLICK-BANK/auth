@@ -16,6 +16,8 @@ public record UserCreateRequest(
                 null,
                 identity,
                 type,
+                "",
+                "",
                 nickname,
                 passwd,
                 700,
