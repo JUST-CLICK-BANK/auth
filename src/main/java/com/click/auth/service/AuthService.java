@@ -9,7 +9,8 @@ import java.util.UUID;
 
 public interface AuthService {
     User findUserByIdentity(String identity, UserIdentityType type);
-    User findUserByCode(UUID userId);
+    User findUserByUuid(UUID userId);
+    User findUserByCode(String code);
     String createUser(UserCreateRequest req);
     String generateLoginToken(String identity, UserIdentityType type);
     String generateUserToken(String accessToken, String password);

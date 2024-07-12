@@ -11,12 +11,12 @@ public record UserCreateRequest(
         String nickname,
         String passwd
 ) {
-    public User toEntity() {
+    public User toEntity(String code) {
         return new User(
                 null,
                 identity,
                 type,
-                "",
+                code,
                 "",
                 nickname,
                 passwd,

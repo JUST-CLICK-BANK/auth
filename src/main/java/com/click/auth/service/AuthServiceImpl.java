@@ -6,6 +6,7 @@ import com.click.auth.domain.dto.response.UserTokenResponse;
 import com.click.auth.domain.entity.User;
 import com.click.auth.domain.repository.UserRepository;
 import com.click.auth.domain.type.UserIdentityType;
+import com.click.auth.util.FriendCodeUtils;
 import com.click.auth.util.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import java.util.UUID;
 public class AuthServiceImpl implements AuthService{
     private final UserRepository userRepository;
     private final JwtUtils jwtUtils;
+    private final FriendCodeUtils friendCodeUtils;
 
     @Override
     public User findUserByIdentity(String identity, UserIdentityType type) {
@@ -25,13 +27,23 @@ public class AuthServiceImpl implements AuthService{
     }
 
     @Override
-    public User findUserByCode(UUID userId) {
+    public User findUserByUuid(UUID userId) {
         return null;
     }
 
     @Override
+    public User findUserByCode(String code) {
+        return userRepository.findByUserCode(code)
+                .orElse(null);
+    }
+
+    @Override
     public String createUser(UserCreateRequest req) {
-        User user = req.toEntity();
+        String code = friendCodeUtils.generateCode();
+        while (findUserByCode(code) != null){
+            code = friendCodeUtils.generateCode();
+        }
+        User user = req.toEntity(code);
         userRepository.save(user);
         return jwtUtils.createLoginToken(LoginTokenResponse.from(user));
     }
