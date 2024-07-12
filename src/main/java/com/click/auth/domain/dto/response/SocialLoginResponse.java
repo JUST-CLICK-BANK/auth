@@ -9,9 +9,9 @@ public record SocialLoginResponse(
         String nickname,
         String image
 ) {
-    public static SocialLoginResponse from(KakaoTokenInfoResponse res, boolean isAleady) {
+    public static SocialLoginResponse from(KakaoTokenInfoResponse res, boolean isAlready) {
         return new SocialLoginResponse(
-                isAleady,
+                isAlready,
                 res.id().toString(),
                 UserIdentityType.KAKAO,
                 null,
