@@ -2,8 +2,6 @@ package com.click.auth.controller;
 
 import com.click.auth.domain.dto.request.UserCreateRequest;
 import com.click.auth.domain.dto.response.UserResponse;
-import com.click.auth.domain.dto.response.UserTokenResponse;
-import com.click.auth.domain.type.UserIdentityType;
 import com.click.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -31,14 +29,6 @@ public class AuthController {
         return authService.findUserByCode(code);
     }
 
-    @GetMapping("/login/token")
-    public String getLoginToken(
-            @RequestParam("identity") String identity,
-            @RequestParam("type") UserIdentityType type
-    ){
-        return authService.generateLoginToken(identity, type);
-    }
-
     @PutMapping("/{id}")
     public void updateUser(
             @PathVariable("id") UUID id,
@@ -48,21 +38,9 @@ public class AuthController {
         authService.updateUserProfile(id, image, name);
     }
 
-    @DeleteMapping("/{id")
+    @DeleteMapping("/{id}")
     public void deleteUSer(@PathVariable("id") UUID id) {
         authService.disableUser(id);
     }
 
-    @GetMapping("/token")
-    public String getUserToken(
-            @RequestParam("token") String token,
-            @RequestParam("password") String password
-    ){
-        return authService.generateUserToken(token, password);
-    }
-
-    @GetMapping("/token/{userToken}")
-    public UserTokenResponse getUserTokenInfo(@PathVariable("userToken") String userToken) {
-        return authService.parseUserToken(userToken);
-    }
 }
