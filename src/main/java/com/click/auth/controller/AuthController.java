@@ -3,7 +3,6 @@ package com.click.auth.controller;
 import com.click.auth.domain.dto.request.UserCreateRequest;
 import com.click.auth.domain.dto.response.UserResponse;
 import com.click.auth.domain.dto.response.UserTokenResponse;
-import com.click.auth.domain.entity.User;
 import com.click.auth.domain.type.UserIdentityType;
 import com.click.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
