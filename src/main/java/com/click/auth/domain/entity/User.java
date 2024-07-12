@@ -49,4 +49,15 @@ public class User {
 
     @Column(name = "USER_DISABLE", nullable = false)
     private Boolean isDisable;
+
+
+    public void setImage(String image) {
+        userImg = image;
+    }
+    public void setNickname(String name) {
+        userNickName = name;
+    }
+    public void setRank(Integer rank) {
+        userCreditRank = rank;
+    }
 }

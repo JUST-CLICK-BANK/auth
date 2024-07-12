@@ -8,6 +8,8 @@ import com.click.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
@@ -22,6 +24,15 @@ public class AuthController {
     @PostMapping
     public String createUser(@RequestBody UserCreateRequest req) {
         return authService.createUser(req);
+    }
+
+    @PutMapping("/{id}")
+    public void updateUser(
+            @PathVariable("id") UUID id,
+            @RequestParam(value = "image", required = false) String image,
+            @RequestParam(value = "nickname", required = false) String name
+    ){
+        authService.updateUserProfile(id, image, name);
     }
 
     @GetMapping("/{code}")

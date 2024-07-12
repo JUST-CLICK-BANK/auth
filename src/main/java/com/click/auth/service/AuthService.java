@@ -12,6 +12,7 @@ public interface AuthService {
     User findUserByIdentity(String identity, UserIdentityType type);
     User findUserByUuid(UUID userId);
     UserResponse findUserByCode(String code);
+    void updateUserProfile(UUID id, String image, String name);
     String createUser(UserCreateRequest req);
     String generateLoginToken(String identity, UserIdentityType type);
     String generateUserToken(String accessToken, String password);

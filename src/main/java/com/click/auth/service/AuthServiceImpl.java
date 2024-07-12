@@ -40,6 +40,14 @@ public class AuthServiceImpl implements AuthService{
     }
 
     @Override
+    @Transactional
+    public void updateUserProfile(UUID id, String image, String name) {
+        User user = userRepository.findById(id).orElseThrow();
+        if (image != null) user.setImage(image);
+        if (name != null) user.setNickname(name);
+    }
+
+    @Override
     public String createUser(UserCreateRequest req) {
         String code = friendCodeUtils.generateCode();
         while (findUserByCode(code) != null){
