@@ -13,6 +13,7 @@ public interface AuthService {
     User findUserByUuid(UUID userId);
     UserResponse findUserByCode(String code);
     void updateUserProfile(UUID id, String image, String name);
+    void disableUser(UUID id);
     String createUser(UserCreateRequest req);
     String generateLoginToken(String identity, UserIdentityType type);
     String generateUserToken(String accessToken, String password);

@@ -60,4 +60,7 @@ public class User {
     public void setRank(Integer rank) {
         userCreditRank = rank;
     }
+    public void disable() {
+        isDisable = true;
+    }
 }

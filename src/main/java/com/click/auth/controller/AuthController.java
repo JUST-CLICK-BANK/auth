@@ -26,15 +26,6 @@ public class AuthController {
         return authService.createUser(req);
     }
 
-    @PutMapping("/{id}")
-    public void updateUser(
-            @PathVariable("id") UUID id,
-            @RequestParam(value = "image", required = false) String image,
-            @RequestParam(value = "nickname", required = false) String name
-    ){
-        authService.updateUserProfile(id, image, name);
-    }
-
     @GetMapping("/{code}")
     public UserResponse findFriend(@PathVariable("code") String code) {
         return authService.findUserByCode(code);
@@ -46,6 +37,20 @@ public class AuthController {
             @RequestParam("type") UserIdentityType type
     ){
         return authService.generateLoginToken(identity, type);
+    }
+
+    @PutMapping("/{id}")
+    public void updateUser(
+            @PathVariable("id") UUID id,
+            @RequestParam(value = "image", required = false) String image,
+            @RequestParam(value = "nickname", required = false) String name
+    ){
+        authService.updateUserProfile(id, image, name);
+    }
+
+    @DeleteMapping("/{id")
+    public void deleteUSer(@PathVariable("id") UUID id) {
+        authService.disableUser(id);
     }
 
     @GetMapping("/token")

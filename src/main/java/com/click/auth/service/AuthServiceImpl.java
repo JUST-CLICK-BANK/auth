@@ -50,6 +50,13 @@ public class AuthServiceImpl implements AuthService{
 
     @Override
     @Transactional
+    public void disableUser(UUID id) {
+        User user = userRepository.findById(id).orElseThrow();
+        user.disable();
+    }
+
+    @Override
+    @Transactional
     public String createUser(UserCreateRequest req) {
         String code = friendCodeUtils.generateCode();
         while (findUserByCode(code) != null){
