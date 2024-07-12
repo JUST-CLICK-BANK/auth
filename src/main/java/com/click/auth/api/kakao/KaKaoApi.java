@@ -2,11 +2,14 @@ package com.click.auth.api.kakao;
 
 import com.click.auth.domain.dto.response.KakaoTokenInfoResponse;
 import com.click.auth.domain.dto.response.KakaoTokenResponse;
+import com.click.auth.domain.dto.response.KakaoUserInfoResponse;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -53,5 +56,16 @@ public class KaKaoApi {
 
     public KakaoTokenInfoResponse getKakaoTokenInfo(KakaoTokenResponse req){
         return kakaoApiFeign.getKakaoTokenInfo("Bearer " + req.access_token());
+    }
+
+    public KakaoUserInfoResponse getKakaoUserInfo(String token){
+        List<String> env = List.of("kakao_account.profile");
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            String jsonArray = objectMapper.writeValueAsString(env);
+            return kakaoApiFeign.getKakaoUserInfo("Bearer "+token, jsonArray);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

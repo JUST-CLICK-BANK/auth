@@ -1,26 +1,31 @@
 package com.click.auth.domain.dto.response;
 
 import com.click.auth.domain.type.UserIdentityType;
-import io.jsonwebtoken.Claims;
 
 public record SocialLoginResponse(
         Boolean isAlready,
         String identity,
-        UserIdentityType type
+        UserIdentityType type,
+        String nickname,
+        String image
 ) {
     public static SocialLoginResponse from(KakaoTokenInfoResponse res, boolean isAleady) {
         return new SocialLoginResponse(
                 isAleady,
                 res.id().toString(),
-                UserIdentityType.KAKAO
+                UserIdentityType.KAKAO,
+                null,
+                null
         );
     }
 
-    public static SocialLoginResponse fromToken(Claims claims){
+    public static SocialLoginResponse from(KakaoUserInfoResponse res, boolean isAlready) {
         return new SocialLoginResponse(
-            false,
-                claims.get("identity", String.class),
-                claims.get("type", UserIdentityType.class)
+                isAlready,
+                res.id().toString(),
+                UserIdentityType.KAKAO,
+                res.kakao_account().profile().is_default_nickname() ? null : res.kakao_account().profile().nickname(),
+                res.kakao_account().profile().is_default_image() ? null : res.kakao_account().profile().profile_image_url()
         );
     }
 }
