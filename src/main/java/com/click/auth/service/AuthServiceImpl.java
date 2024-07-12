@@ -2,6 +2,7 @@ package com.click.auth.service;
 
 import com.click.auth.domain.dto.response.LoginTokenResponse;
 import com.click.auth.domain.dto.request.UserCreateRequest;
+import com.click.auth.domain.dto.response.UserResponse;
 import com.click.auth.domain.dto.response.UserTokenResponse;
 import com.click.auth.domain.entity.User;
 import com.click.auth.domain.repository.UserRepository;
@@ -30,13 +31,12 @@ public class AuthServiceImpl implements AuthService{
 
     @Override
     public User findUserByUuid(UUID userId) {
-        return null;
+        return userRepository.findById(userId).orElseThrow();
     }
 
     @Override
-    public User findUserByCode(String code) {
-        return userRepository.findByUserCode(code)
-                .orElse(null);
+    public UserResponse findUserByCode(String code) {
+        return UserResponse.from(userRepository.findByUserCode(code).orElse(null));
     }
 
     @Override

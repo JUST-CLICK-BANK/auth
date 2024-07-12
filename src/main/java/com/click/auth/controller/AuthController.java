@@ -1,7 +1,9 @@
 package com.click.auth.controller;
 
 import com.click.auth.domain.dto.request.UserCreateRequest;
+import com.click.auth.domain.dto.response.UserResponse;
 import com.click.auth.domain.dto.response.UserTokenResponse;
+import com.click.auth.domain.entity.User;
 import com.click.auth.domain.type.UserIdentityType;
 import com.click.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,11 @@ public class AuthController {
     @PostMapping
     public String createUser(@RequestBody UserCreateRequest req) {
         return authService.createUser(req);
+    }
+
+    @GetMapping("/{code}")
+    public UserResponse findFriend(@PathVariable("code") String code) {
+        return authService.findUserByCode(code);
     }
 
     @GetMapping("/login/token")

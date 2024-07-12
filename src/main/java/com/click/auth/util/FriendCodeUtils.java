@@ -10,7 +10,7 @@ public class FriendCodeUtils {
 
     public String generateCode() {
         StringBuilder code = new StringBuilder();
-        while(code.length() < 6) {
+        while(code.length() < 5) {
             code.append(codeSet.charAt(new Random().nextInt(36)));
         }
         return code.toString();
