@@ -8,6 +8,7 @@ import com.click.auth.domain.entity.User;
 import com.click.auth.domain.repository.UserRepository;
 import com.click.auth.domain.type.UserIdentityType;
 import com.click.auth.exception.LoginExpirationException;
+import com.click.auth.exception.NotFoundExcetion;
 import com.click.auth.exception.PasswordMatchException;
 import com.click.auth.util.FriendCodeUtils;
 import com.click.auth.util.JwtUtils;
@@ -32,7 +33,7 @@ public class AuthServiceImpl implements AuthService{
 
     @Override
     public User findUserByUuid(UUID userId) {
-        return userRepository.findById(userId).orElseThrow();
+        return userRepository.findById(userId).orElseThrow(() -> new NotFoundExcetion(("USER")));
     }
 
     @Override
@@ -43,7 +44,7 @@ public class AuthServiceImpl implements AuthService{
     @Override
     @Transactional
     public void updateUserProfile(UUID id, String image, String name) {
-        User user = userRepository.findById(id).orElseThrow();
+        User user = findUserByUuid(id);
         if (image != null) user.setImage(image);
         if (name != null) user.setNickname(name);
     }
@@ -51,7 +52,7 @@ public class AuthServiceImpl implements AuthService{
     @Override
     @Transactional
     public void disableUser(UUID id) {
-        User user = userRepository.findById(id).orElseThrow();
+        User user = findUserByUuid(id);
         user.disable();
     }
 

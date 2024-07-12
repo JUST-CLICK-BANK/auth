@@ -26,4 +26,10 @@ public class ExceptionController {
     public String LoginExpirationException() {
         return "LOGIN INFO HAS EXPIRED";
     }
+
+    @ExceptionHandler(NotFoundExcetion.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String NotFoundException(NotFoundExcetion e) {
+        return e.getMessage() + " NOT FOUND";
+    }
 }
