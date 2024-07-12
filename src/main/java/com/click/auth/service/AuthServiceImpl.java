@@ -6,6 +6,8 @@ import com.click.auth.domain.dto.response.UserTokenResponse;
 import com.click.auth.domain.entity.User;
 import com.click.auth.domain.repository.UserRepository;
 import com.click.auth.domain.type.UserIdentityType;
+import com.click.auth.exception.LoginExpirationException;
+import com.click.auth.exception.PasswordMatchException;
 import com.click.auth.util.FriendCodeUtils;
 import com.click.auth.util.JwtUtils;
 import lombok.RequiredArgsConstructor;
@@ -59,10 +61,10 @@ public class AuthServiceImpl implements AuthService{
         LoginTokenResponse loginToken = jwtUtils.parseLoginToken(accessToken);
         User user = userRepository.findById(loginToken.uuid()).orElseThrow(IllegalArgumentException::new);
         if (!user.getUserPasswd().equals(password)) {
-            throw new IllegalArgumentException();
+            throw new PasswordMatchException();
         }
         if (!user.getUserTokenVersion().equals(loginToken.version())) {
-            throw new IllegalArgumentException();
+            throw new LoginExpirationException();
         }
         return jwtUtils.createUserToken(user);
     }
