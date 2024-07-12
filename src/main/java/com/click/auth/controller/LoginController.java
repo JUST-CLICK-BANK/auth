@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class LoginController {
     private final LoginService loginService;
 
-    @GetMapping("/login/token")
+    @GetMapping("/token")
     public String getLoginToken(
             @RequestParam("identity") String identity,
             @RequestParam("type") UserIdentityType type

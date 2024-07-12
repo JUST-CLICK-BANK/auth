@@ -40,7 +40,7 @@ public class AuthController {
         authService.updateUserProfile(id, image, name);
     }
 
-    @DeleteMapping("/{id")
+    @DeleteMapping("/{id}")
     public void deleteUSer(@PathVariable("id") UUID id) {
         authService.disableUser(id);
     }

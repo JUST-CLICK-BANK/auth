@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 public class TokenController {
     private final TokenService tokenService;
 
-    @GetMapping("/token")
+    @GetMapping
     public String getUserToken(
             @RequestParam("token") String token,
             @RequestParam("password") String password
@@ -19,7 +19,7 @@ public class TokenController {
         return tokenService.generateUserToken(token, password);
     }
 
-    @GetMapping("/token/{userToken}")
+    @GetMapping("/{userToken}")
     public UserTokenResponse getUserTokenInfo(@PathVariable("userToken") String userToken) {
         return tokenService.parseUserToken(userToken);
     }
