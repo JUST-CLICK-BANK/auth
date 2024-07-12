@@ -11,6 +11,7 @@ import com.click.auth.exception.LoginExpirationException;
 import com.click.auth.exception.PasswordMatchException;
 import com.click.auth.util.FriendCodeUtils;
 import com.click.auth.util.JwtUtils;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -48,6 +49,7 @@ public class AuthServiceImpl implements AuthService{
     }
 
     @Override
+    @Transactional
     public String createUser(UserCreateRequest req) {
         String code = friendCodeUtils.generateCode();
         while (findUserByCode(code) != null){
