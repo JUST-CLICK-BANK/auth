@@ -1,8 +1,6 @@
 package com.click.auth.controller;
 
-import com.click.auth.api.KaKaoApi;
-import com.click.auth.domain.dto.request.KakaoTokenRequest;
-import com.click.auth.domain.dto.response.UserTokenResponse;
+import com.click.auth.domain.dto.response.SocialLoginResponse;
 import com.click.auth.service.KakaoAuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -13,8 +11,14 @@ import org.springframework.web.bind.annotation.*;
 public class KakaoAuthController {
     private final KakaoAuthService kakaoAuthService;
 
-    @PostMapping
-    public String getKakaoToken(@RequestBody KakaoTokenRequest req) {
-        return kakaoAuthService.getUserToken(req);
+    @GetMapping
+    public SocialLoginResponse getUserTokenByKakao(
+            @RequestParam(value = "code") String kakaoCode,
+            @RequestParam(value = "isFront", defaultValue = "false") Boolean isFront
+    ){
+        if (isFront) {
+            return kakaoAuthService.getUserToken(kakaoCode);
+        }
+        return null;
     }
 }
