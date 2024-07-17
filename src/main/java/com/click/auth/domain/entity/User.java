@@ -51,6 +51,9 @@ public class User {
     private Boolean isDisable;
 
 
+    public void setPassword(String password) {
+        userPasswd = password;
+    }
     public void setImage(String image) {
         userImg = image;
     }

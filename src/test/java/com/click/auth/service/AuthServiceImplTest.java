@@ -167,85 +167,125 @@ class AuthServiceImplTest extends TestInitData {
     }
 
     @Nested
-    class updateUserProfile {
+    class updateUserImage {
         @Test
-        void 성공_프로필_사진과_닉네임이_모두_업데이트됨() {
+        void 성공_이미지가_업데이트됨() {
             // give
             UUID id = UUID.fromString("00000000-0000-0000-0000-000000000000");
-            String image = "changed.jpg";
-            String name = "진수";
+            String image = "changed.png";
             doReturn(user).when(authService).findUserByUuid(id);
 
             // when
-            authService.updateUserProfile(id, image, name);
+            authService.updateUserImage(id, image);
 
             // then
             Mockito.verify(authService, Mockito.times(1)).findUserByUuid(id);
-            assertEquals("changed.jpg", user.getUserImg());
-            assertEquals("진수", user.getUserNickName());
+            assertEquals(image, user.getUserImg());
         }
 
         @Test
-        void 성공_프로필_사진만_업데이트됨() {
-            // give
-            UUID id = UUID.fromString("00000000-0000-0000-0000-000000000000");
-            String image = "changed.jpg";
-            String name = null;
-            doReturn(user).when(authService).findUserByUuid(id);
-
-            // when
-            authService.updateUserProfile(id, image, name);
-
-            // then
-            Mockito.verify(authService, Mockito.times(1)).findUserByUuid(id);
-            assertEquals("changed.jpg", user.getUserImg());
-            assertNotNull(user.getUserNickName());
-        }
-
-        @Test
-        void 성공_닉네임만_업데이트됨() {
-            // give
-            UUID id = UUID.fromString("00000000-0000-0000-0000-000000000000");
-            String image = null;
-            String name = "진수";
-            doReturn(user).when(authService).findUserByUuid(id);
-
-            // when
-            authService.updateUserProfile(id, image, name);
-
-            // then
-            Mockito.verify(authService, Mockito.times(1)).findUserByUuid(id);
-            assertNotNull(user.getUserImg());
-            assertEquals("진수", user.getUserNickName());
-        }
-
-        @Test
-        void 성공_이미지와_닉네임이_NULL이라_아무것도_업데이트_되지_않음() {
-            // give
-            UUID id = UUID.fromString("00000000-0000-0000-0000-000000000000");
-            String image = "changed.jpg";
-            String name = "진수";
-            doReturn(user).when(authService).findUserByUuid(id);
-
-            // when
-            authService.updateUserProfile(id, image, name);
-
-            // then
-            Mockito.verify(authService, Mockito.times(1)).findUserByUuid(id);
-            assertNotNull(user.getUserImg());
-            assertNotNull(user.getUserNickName());
-        }
-
-        @Test
-        void 성공_유저를_찾지_못해_예외_던짐() {
+        void 실패_유저를_찾지_못해_예외_던짐() {
             // give
             UUID id = UUID.fromString("11111111-0000-0000-0000-000000000000");
-            String image = null;
-            String name = null;
+            String image = "changed.png";
             doThrow(NotFoundExcetion.class).when(authService).findUserByUuid(id);
 
             // when
-            assertThrows(NotFoundExcetion.class, () -> authService.updateUserProfile(id, image, name));
+            assertThrows(NotFoundExcetion.class, () -> authService.updateUserImage(id, image));
+
+            // then
+            Mockito.verify(authService, Mockito.times(1)).findUserByUuid(id);
+        }
+    }
+
+    @Nested
+    class updateUserNickname {
+        @Test
+        void 성공_닉네임이_업데이트됨() {
+            // give
+            UUID id = UUID.fromString("00000000-0000-0000-0000-000000000000");
+            String name = "진수";
+            doReturn(user).when(authService).findUserByUuid(id);
+
+            // when
+            authService.updateUserNickname(id, name);
+
+            // then
+            Mockito.verify(authService, Mockito.times(1)).findUserByUuid(id);
+            assertEquals(name, user.getUserNickName());
+        }
+
+        @Test
+        void 실패_유저를_찾지_못해_예외_던짐() {
+            // give
+            UUID id = UUID.fromString("11111111-0000-0000-0000-000000000000");
+            String name = "진수";
+            doThrow(NotFoundExcetion.class).when(authService).findUserByUuid(id);
+
+            // when
+            assertThrows(NotFoundExcetion.class, () -> authService.updateUserNickname(id, name));
+
+            // then
+            Mockito.verify(authService, Mockito.times(1)).findUserByUuid(id);
+        }
+    }
+
+    @Nested
+    class updateUserPassword {
+        @Test
+        void 성공_비밀번호가_업데이트됨() {
+            // give
+            UUID id = UUID.fromString("00000000-0000-0000-0000-000000000000");
+            String password = "12345";
+            doReturn(user).when(authService).findUserByUuid(id);
+
+            // when
+            authService.updateUserImage(id, password);
+
+            // then
+            Mockito.verify(authService, Mockito.times(1)).findUserByUuid(id);
+            assertEquals(password, user.getUserImg());
+        }
+
+        @Test
+        void 실패_유저를_찾지_못해_예외_던짐() {
+            // give
+            UUID id = UUID.fromString("11111111-0000-0000-0000-000000000000");
+            String password = "12345";
+            doThrow(NotFoundExcetion.class).when(authService).findUserByUuid(id);
+
+            // when
+            assertThrows(NotFoundExcetion.class, () -> authService.updateUserImage(id, password));
+
+            // then
+            Mockito.verify(authService, Mockito.times(1)).findUserByUuid(id);
+        }
+    }
+
+    @Nested
+    class updateTokenVersion {
+        @Test
+        void 성공_토큰_버전이_1_올라감() {
+            // give
+            UUID id = UUID.fromString("00000000-0000-0000-0000-000000000000");
+            doReturn(user).when(authService).findUserByUuid(id);
+
+            // when
+            authService.updateTokenVersion(id);
+
+            // then
+            Mockito.verify(authService, Mockito.times(1)).findUserByUuid(id);
+            assertEquals(11, user.getUserTokenVersion());
+        }
+
+        @Test
+        void 실패_유저를_찾지_못해_예외_던짐() {
+            // give
+            UUID id = UUID.fromString("11111111-0000-0000-0000-000000000000");
+            doThrow(NotFoundExcetion.class).when(authService).findUserByUuid(id);
+
+            // when
+            assertThrows(NotFoundExcetion.class, () -> authService.updateTokenVersion(id));
 
             // then
             Mockito.verify(authService, Mockito.times(1)).findUserByUuid(id);

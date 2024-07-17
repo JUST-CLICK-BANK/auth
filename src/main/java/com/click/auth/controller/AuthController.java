@@ -53,6 +53,14 @@ public class AuthController {
         authService.updateUserNickname(id, req.data());
     }
 
+    @PutMapping("/{id}/password")
+    public void changePassword(
+            @PathVariable("id") UUID id,
+            @RequestBody UserUpdateRequest req
+    ){
+        authService.updateUserPassword(id, req.data());
+    }
+
     @PutMapping("/{id}/token")
     public void updateTokenVersion(@PathVariable("id") UUID id){
         authService.updateTokenVersion(id);
