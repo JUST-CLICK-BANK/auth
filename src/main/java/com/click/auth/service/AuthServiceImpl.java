@@ -2,6 +2,7 @@ package com.click.auth.service;
 
 import com.click.auth.domain.dto.response.LoginTokenResponse;
 import com.click.auth.domain.dto.request.UserCreateRequest;
+import com.click.auth.domain.dto.response.UserListResponse;
 import com.click.auth.domain.dto.response.UserResponse;
 import com.click.auth.domain.entity.User;
 import com.click.auth.domain.repository.UserRepository;
@@ -13,6 +14,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -48,6 +50,13 @@ public class AuthServiceImpl implements AuthService{
     @Override
     public UserResponse findUserByCode(String code) {
         return UserResponse.from(userRepository.findByUserCode(code).orElse(null));
+    }
+
+    @Override
+    public List<UserListResponse> findUsersByCodes(String[] codes) {
+        List<User> allByUserCode = userRepository.findAllByUserCodeIn(codes);
+        return allByUserCode.stream().map(UserListResponse::from).toList();
+//        return userRepository.findAllByUserCode(codes).stream().map(UserListResponse::from).toList();
     }
 
     @Override
