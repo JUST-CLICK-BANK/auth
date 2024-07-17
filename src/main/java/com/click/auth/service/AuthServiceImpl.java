@@ -61,10 +61,23 @@ public class AuthServiceImpl implements AuthService{
 
     @Override
     @Transactional
-    public void updateUserProfile(UUID id, String image, String name) {
+    public void updateUserImage(UUID id, String image) {
         User user = findUserByUuid(id);
-        if (image != null) user.setImage(image);
-        if (name != null) user.setNickname(name);
+        user.setImage(image);
+    }
+
+    @Override
+    @Transactional
+    public void updateUserNickname(UUID id, String name) {
+        User user = findUserByUuid(id);
+        user.setNickname(name);
+    }
+
+    @Override
+    @Transactional
+    public void updateTokenVersion(UUID id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundExcetion("USER"));
+        user.upTokenVersion();
     }
 
     @Override
