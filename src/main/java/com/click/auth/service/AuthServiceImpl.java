@@ -84,7 +84,7 @@ public class AuthServiceImpl implements AuthService{
     @Override
     @Transactional
     public void updateTokenVersion(UUID id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundExcetion("USER"));
+        User user = findUserByUuid(id);
         user.upTokenVersion();
     }
 
