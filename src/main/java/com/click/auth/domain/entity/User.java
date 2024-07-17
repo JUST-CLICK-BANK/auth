@@ -60,6 +60,9 @@ public class User {
     public void setRank(Integer rank) {
         userCreditRank = rank;
     }
+    public void upTokenVersion() {
+        userTokenVersion++;
+    }
     public void disable() {
         isDisable = true;
     }
