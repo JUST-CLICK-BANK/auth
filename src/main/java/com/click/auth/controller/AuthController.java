@@ -1,11 +1,14 @@
 package com.click.auth.controller;
 
 import com.click.auth.domain.dto.request.UserCreateRequest;
+import com.click.auth.domain.dto.request.UserUpdateRequest;
+import com.click.auth.domain.dto.response.UserListResponse;
 import com.click.auth.domain.dto.response.UserResponse;
 import com.click.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -24,18 +27,43 @@ public class AuthController {
         return authService.createUser(req);
     }
 
-    @GetMapping("/{code}")
-    public UserResponse findFriend(@PathVariable("code") String code) {
+    @GetMapping
+    public UserResponse findFriend(@RequestParam("code") String code) {
         return authService.findUserByCode(code);
     }
 
-    @PutMapping("/{id}")
-    public void updateUser(
+    @GetMapping("/friends")
+    public List<UserListResponse> findFriendInfoList(@RequestParam("codes") String[] codes){
+        return authService.findUsersByCodes(codes);
+    }
+
+    @PutMapping("/{id}/image")
+    public void updateUserImage(
             @PathVariable("id") UUID id,
-            @RequestParam(value = "image", required = false) String image,
-            @RequestParam(value = "nickname", required = false) String name
+            @RequestBody UserUpdateRequest req
+    ) {
+        authService.updateUserImage(id, req.data());
+    }
+
+    @PutMapping("/{id}/nickname")
+    public void updateUserNickname(
+            @PathVariable("id") UUID id,
+            @RequestBody UserUpdateRequest req
     ){
-        authService.updateUserProfile(id, image, name);
+        authService.updateUserNickname(id, req.data());
+    }
+
+    @PutMapping("/{id}/password")
+    public void changePassword(
+            @PathVariable("id") UUID id,
+            @RequestBody UserUpdateRequest req
+    ){
+        authService.updateUserPassword(id, req.data());
+    }
+
+    @PutMapping("/{id}/token")
+    public void updateTokenVersion(@PathVariable("id") UUID id){
+        authService.updateTokenVersion(id);
     }
 
     @DeleteMapping("/{id}")

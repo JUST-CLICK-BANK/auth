@@ -51,6 +51,9 @@ public class User {
     private Boolean isDisable;
 
 
+    public void setPassword(String password) {
+        userPasswd = password;
+    }
     public void setImage(String image) {
         userImg = image;
     }
@@ -59,6 +62,9 @@ public class User {
     }
     public void setRank(Integer rank) {
         userCreditRank = rank;
+    }
+    public void upTokenVersion() {
+        userTokenVersion++;
     }
     public void disable() {
         isDisable = true;

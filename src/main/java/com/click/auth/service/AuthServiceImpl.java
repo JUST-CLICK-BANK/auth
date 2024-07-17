@@ -2,6 +2,7 @@ package com.click.auth.service;
 
 import com.click.auth.domain.dto.response.LoginTokenResponse;
 import com.click.auth.domain.dto.request.UserCreateRequest;
+import com.click.auth.domain.dto.response.UserListResponse;
 import com.click.auth.domain.dto.response.UserResponse;
 import com.click.auth.domain.entity.User;
 import com.click.auth.domain.repository.UserRepository;
@@ -13,6 +14,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -51,11 +53,39 @@ public class AuthServiceImpl implements AuthService{
     }
 
     @Override
+    public List<UserListResponse> findUsersByCodes(String[] codes) {
+        List<User> allByUserCode = userRepository.findAllByUserCodeIn(codes);
+        return allByUserCode.stream().map(UserListResponse::from).toList();
+//        return userRepository.findAllByUserCode(codes).stream().map(UserListResponse::from).toList();
+    }
+
+    @Override
     @Transactional
-    public void updateUserProfile(UUID id, String image, String name) {
+    public void updateUserImage(UUID id, String image) {
         User user = findUserByUuid(id);
-        if (image != null) user.setImage(image);
-        if (name != null) user.setNickname(name);
+        user.setImage(image);
+    }
+
+    @Override
+    @Transactional
+    public void updateUserNickname(UUID id, String name) {
+        User user = findUserByUuid(id);
+        user.setNickname(name);
+    }
+
+    @Override
+    @Transactional
+    public void updateUserPassword(UUID id, String password) {
+        User user = findUserByUuid(id);
+        user.setPassword(password);
+        user.upTokenVersion();
+    }
+
+    @Override
+    @Transactional
+    public void updateTokenVersion(UUID id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundExcetion("USER"));
+        user.upTokenVersion();
     }
 
     @Override

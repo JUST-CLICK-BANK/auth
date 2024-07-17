@@ -1,0 +1,20 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: auth
+  datasource:
+    url: jdbc:postgresql://${dbServer}:${dbPort}/${dbName}?characterEncoding=UTF-8&serverTimezone=Asia/Seoul
+    username: ${dbUsername}
+    password: ${dbPassword}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+jwt:
+  secret_key: ${secretKey}
+  public_key: ${publicKey}
+kakao:
+  client_id: ${kakaoApiKey}
+  redirect_uri: ${kakaoRedirectUri}
