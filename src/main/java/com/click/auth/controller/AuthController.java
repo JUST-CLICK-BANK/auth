@@ -1,11 +1,13 @@
 package com.click.auth.controller;
 
 import com.click.auth.domain.dto.request.UserCreateRequest;
+import com.click.auth.domain.dto.response.UserListResponse;
 import com.click.auth.domain.dto.response.UserResponse;
 import com.click.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -24,9 +26,14 @@ public class AuthController {
         return authService.createUser(req);
     }
 
-    @GetMapping("/{code}")
-    public UserResponse findFriend(@PathVariable("code") String code) {
+    @GetMapping
+    public UserResponse findFriend(@RequestParam("code") String code) {
         return authService.findUserByCode(code);
+    }
+
+    @GetMapping("/friends")
+    public List<UserListResponse> findFriendInfoList(@RequestParam("codes") String[] codes){
+        return authService.findUsersByCodes(codes);
     }
 
     @PutMapping("/{id}")
