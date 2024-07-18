@@ -240,7 +240,7 @@ class AuthServiceImplTest extends TestInitData {
             doReturn(user).when(authService).findUserByUuid(id);
 
             // when
-            authService.updateUserImage(id, password);
+            authService.updateUserPassword(id, password);
 
             // then
             Mockito.verify(authService, Mockito.times(1)).findUserByUuid(id);
@@ -255,7 +255,7 @@ class AuthServiceImplTest extends TestInitData {
             doThrow(NotFoundExcetion.class).when(authService).findUserByUuid(id);
 
             // when
-            assertThrows(NotFoundExcetion.class, () -> authService.updateUserImage(id, password));
+            assertThrows(NotFoundExcetion.class, () -> authService.updateUserPassword(id, password));
 
             // then
             Mockito.verify(authService, Mockito.times(1)).findUserByUuid(id);
