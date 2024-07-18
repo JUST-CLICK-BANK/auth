@@ -6,20 +6,23 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public record UserResponse(
-        UUID id,
-        String code,
-        String img,
-        String name,
-        LocalDateTime createdAt
+    UUID id,
+    String code,
+    String img,
+    String name,
+    LocalDateTime createdAt
 ) {
-    public static UserResponse from(User user){
-        if (user == null) return null;
+
+    public static UserResponse from(User user) {
+        if (user == null) {
+            return null;
+        }
         return new UserResponse(
-                user.getUserId(),
-                user.getUserCode(),
-                user.getUserImg(),
-                user.getUserNickName(),
-                user.getUserCreatedAt()
+            user.getUserId(),
+            user.getUserCode(),
+            user.getUserImg(),
+            user.getUserNickName(),
+            user.getUserCreatedAt()
         );
     }
 }

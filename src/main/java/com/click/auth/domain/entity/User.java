@@ -15,7 +15,9 @@ import java.util.UUID;
 @Getter
 @Table(name = "USERS")
 public class User {
-    @Id @GeneratedValue(strategy = GenerationType.UUID)
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "USER_ID")
     private UUID userId;
 
@@ -38,6 +40,9 @@ public class User {
     @Column(name = "USER_SIMPLE_PASSWD", nullable = false)
     private String userPasswd;
 
+    @Column(name = "USER_SALT")
+    private String userSalt;
+
     @Column(name = "USER_CREDIT_RANK", nullable = false)
     private Integer userCreditRank;
 
@@ -54,18 +59,23 @@ public class User {
     public void setPassword(String password) {
         userPasswd = password;
     }
+
     public void setImage(String image) {
         userImg = image;
     }
+
     public void setNickname(String name) {
         userNickName = name;
     }
+
     public void setRank(Integer rank) {
         userCreditRank = rank;
     }
+
     public void upTokenVersion() {
         userTokenVersion++;
     }
+
     public void disable() {
         isDisable = true;
     }

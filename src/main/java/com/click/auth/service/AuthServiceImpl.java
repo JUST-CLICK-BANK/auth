@@ -10,6 +10,7 @@ import com.click.auth.domain.type.UserIdentityType;
 import com.click.auth.exception.NotFoundExcetion;
 import com.click.auth.util.FriendCodeUtils;
 import com.click.auth.util.JwtUtils;
+import com.click.auth.util.PasswordUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,19 +20,21 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class AuthServiceImpl implements AuthService{
+public class AuthServiceImpl implements AuthService {
+
     private final UserRepository userRepository;
     private final JwtUtils jwtUtils;
     private final FriendCodeUtils friendCodeUtils;
+    private final PasswordUtils passwordUtils;
 
     @Override
     @Transactional
     public String createUser(UserCreateRequest req) {
         String code = friendCodeUtils.generateCode();
-        while (findUserByCode(code) != null){
+        while (findUserByCode(code) != null) {
             code = friendCodeUtils.generateCode();
         }
-        User user = req.toEntity(code);
+        User user = req.toEntity(code, passwordUtils.generateSalt());
         userRepository.save(user);
         return jwtUtils.createLoginToken(LoginTokenResponse.from(user));
     }
@@ -39,7 +42,7 @@ public class AuthServiceImpl implements AuthService{
     @Override
     public User findUserByIdentity(String identity, UserIdentityType type) {
         return userRepository.findByUserIdentityAndUserIdentityType(identity, type)
-                .orElse(null);
+            .orElse(null);
     }
 
     @Override

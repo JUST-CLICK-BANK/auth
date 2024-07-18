@@ -11,7 +11,7 @@ public record UserCreateRequest(
         String nickname,
         String passwd
 ) {
-    public User toEntity(String code) {
+    public User toEntity(String code, String salt) {
         return new User(
                 null,
                 identity,
@@ -20,6 +20,7 @@ public record UserCreateRequest(
                 "",
                 nickname,
                 passwd,
+                salt,
                 700,
                 LocalDateTime.now(),
                 1,

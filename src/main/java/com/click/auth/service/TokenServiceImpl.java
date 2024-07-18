@@ -6,20 +6,24 @@ import com.click.auth.domain.entity.User;
 import com.click.auth.exception.LoginExpirationException;
 import com.click.auth.exception.PasswordMatchException;
 import com.click.auth.util.JwtUtils;
+import com.click.auth.util.PasswordUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class TokenServiceImpl implements TokenService{
+public class TokenServiceImpl implements TokenService {
+
     private final AuthService authService;
     private final JwtUtils jwtUtils;
+    private final PasswordUtils passwordUtils;
 
     @Override
     public String generateUserToken(String accessToken, String password) {
         LoginTokenResponse loginToken = jwtUtils.parseLoginToken(accessToken);
         User user = authService.findUserByUuid(loginToken.uuid());
-        if (!user.getUserPasswd().equals(password)) {
+        String hashedPassword = passwordUtils.passwordHashing(password, user.getUserSalt());
+        if (!user.getUserPasswd().equals(hashedPassword)) {
             throw new PasswordMatchException();
         }
         if (!user.getUserTokenVersion().equals(loginToken.version())) {

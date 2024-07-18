@@ -15,16 +15,20 @@ import java.util.Map;
 @Component
 @RequiredArgsConstructor
 public class KaKaoApi {
+
     private final KakaoAuthFeign kakaoAuthFeign;
     private final KakaoApiFeign kakaoApiFeign;
 
-    @Value("${kakao.client_id}") private String client_id;
-    @Value("${kakao.redirect_uri}") private String redirect_uri;
+    @Value("${kakao.client_id}")
+    private String client_id;
+    @Value("${kakao.redirect_uri}")
+    private String redirect_uri;
 
     /*
     public KakaoTokenResponse getKakaoToken(String code) {
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded;charset=utf-8");
+        httpHeaders.add(HttpHeaders.CONTENT_TYPE,
+            "application/x-www-form-urlencoded;charset=utf-8");
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
@@ -32,18 +36,19 @@ public class KaKaoApi {
         params.add("redirect_uri", redirect_uri);
         params.add("code", code);
 
-        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(params, httpHeaders);
+        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(params,
+            httpHeaders);
 
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<KakaoTokenResponse> response = restTemplate.exchange(
-                "https://kauth.kakao.com/oauth/token",
-                HttpMethod.POST,
-                httpEntity,
-                KakaoTokenResponse.class
+            "https://kauth.kakao.com/oauth/token",
+            HttpMethod.POST,
+            httpEntity,
+            KakaoTokenResponse.class
         );
         return response.getBody();
     }
-     */
+    */
 
     public KakaoTokenResponse getKakaoToken(String code) {
         Map<String, String> form = new HashMap<>();
@@ -54,16 +59,16 @@ public class KaKaoApi {
         return kakaoAuthFeign.getKakaoToken(form);
     }
 
-    public KakaoTokenInfoResponse getKakaoTokenInfo(KakaoTokenResponse req){
+    public KakaoTokenInfoResponse getKakaoTokenInfo(KakaoTokenResponse req) {
         return kakaoApiFeign.getKakaoTokenInfo("Bearer " + req.access_token());
     }
 
-    public KakaoUserInfoResponse getKakaoUserInfo(String token){
+    public KakaoUserInfoResponse getKakaoUserInfo(String token) {
         List<String> env = List.of("kakao_account.profile");
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             String jsonArray = objectMapper.writeValueAsString(env);
-            return kakaoApiFeign.getKakaoUserInfo("Bearer "+token, jsonArray);
+            return kakaoApiFeign.getKakaoUserInfo("Bearer " + token, jsonArray);
         } catch (Exception e) {
             return null;
         }
