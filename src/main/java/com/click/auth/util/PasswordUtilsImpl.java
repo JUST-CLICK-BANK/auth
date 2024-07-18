@@ -3,6 +3,7 @@ package com.click.auth.util;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -41,6 +42,14 @@ public class PasswordUtilsImpl implements PasswordUtils {
             sb.append(String.format("%02x", b));
         }
         return sb.toString();
+    }
+
+    @Override
+    public String generateSalt() {
+        SecureRandom random = new SecureRandom();
+        byte[] bytes = new byte[8];
+        random.nextBytes(bytes);
+        return byteToHex(bytes);
     }
 
     public PasswordUtilsImpl(
