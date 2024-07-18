@@ -12,7 +12,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class TokenServiceImpl implements TokenService{
+public class TokenServiceImpl implements TokenService {
+
     private final AuthService authService;
     private final JwtUtils jwtUtils;
     private final PasswordUtils passwordUtils;

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class PasswordUtilsImpl implements PasswordUtils {
+
     private final int iterations;
 
     @Override
@@ -26,7 +27,7 @@ public class PasswordUtilsImpl implements PasswordUtils {
         digest.reset();
         digest.update(salt);
         byte[] result = digest.digest(rawData.getBytes(StandardCharsets.UTF_8));
-        for(int i=0; i < iterations; i++){
+        for (int i = 0; i < iterations; i++) {
             digest.reset();
             result = digest.digest(result);
         }
@@ -34,9 +35,9 @@ public class PasswordUtilsImpl implements PasswordUtils {
     }
 
     @Override
-    public String byteToHex(byte[] bytes){
+    public String byteToHex(byte[] bytes) {
         StringBuilder sb = new StringBuilder();
-        for(byte b: bytes) {
+        for (byte b : bytes) {
             sb.append(String.format("%02x", b));
         }
         return sb.toString();

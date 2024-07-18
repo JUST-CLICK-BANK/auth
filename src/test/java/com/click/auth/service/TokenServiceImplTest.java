@@ -21,7 +21,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-class TokenServiceImplTest extends TestInitData{
+class TokenServiceImplTest extends TestInitData {
+
     @InjectMocks
     private TokenServiceImpl tokenService;
     @Mock
@@ -31,14 +32,15 @@ class TokenServiceImplTest extends TestInitData{
 
     @Nested
     class generateUserToken {
+
         @Test
         void 성공_정상적으로_토큰_생성됨() {
             // give
             String accessToken = "QWERASDFZXCVQWERASDFZXCVQWERASDFZXCV";
             String password = "000000";
             LoginTokenResponse loginTokenResponse = new LoginTokenResponse(
-                    UUID.fromString("00000000-0000-0000-0000-000000000000"),
-                    10
+                UUID.fromString("00000000-0000-0000-0000-000000000000"),
+                10
             );
             given(jwtUtils.parseLoginToken(accessToken)).willReturn(loginTokenResponse);
             given(authService.findUserByUuid(loginTokenResponse.uuid())).willReturn(user);
@@ -60,14 +62,16 @@ class TokenServiceImplTest extends TestInitData{
             String accessToken = "QWERASDFZXCVQWERASDFZXCVQWERASDFZXCV";
             String password = "000000";
             LoginTokenResponse loginTokenResponse = new LoginTokenResponse(
-                    UUID.fromString("00000000-0000-0000-0000-000000000000"),
-                    10
+                UUID.fromString("00000000-0000-0000-0000-000000000000"),
+                10
             );
             given(jwtUtils.parseLoginToken(accessToken)).willReturn(loginTokenResponse);
-            given(authService.findUserByUuid(loginTokenResponse.uuid())).willThrow(NotFoundExcetion.class);
+            given(authService.findUserByUuid(loginTokenResponse.uuid())).willThrow(
+                NotFoundExcetion.class);
 
             // when
-            assertThrows(NotFoundExcetion.class, () -> tokenService.generateUserToken(accessToken, password));
+            assertThrows(NotFoundExcetion.class,
+                () -> tokenService.generateUserToken(accessToken, password));
 
             // then
             Mockito.verify(jwtUtils, Mockito.times(1)).parseLoginToken(accessToken);
@@ -81,14 +85,15 @@ class TokenServiceImplTest extends TestInitData{
             String accessToken = "QWERASDFZXCVQWERASDFZXCVQWERASDFZXCV";
             String password = "111111";
             LoginTokenResponse loginTokenResponse = new LoginTokenResponse(
-                    UUID.fromString("00000000-0000-0000-0000-000000000000"),
-                    10
+                UUID.fromString("00000000-0000-0000-0000-000000000000"),
+                10
             );
             given(jwtUtils.parseLoginToken(accessToken)).willReturn(loginTokenResponse);
             given(authService.findUserByUuid(loginTokenResponse.uuid())).willReturn(user);
 
             // when
-            assertThrows(PasswordMatchException.class, () -> tokenService.generateUserToken(accessToken, password));
+            assertThrows(PasswordMatchException.class,
+                () -> tokenService.generateUserToken(accessToken, password));
 
             // then
             Mockito.verify(jwtUtils, Mockito.times(1)).parseLoginToken(accessToken);
@@ -102,14 +107,15 @@ class TokenServiceImplTest extends TestInitData{
             String accessToken = "QWERASDFZXCVQWERASDFZXCVQWERASDFZXCV";
             String password = "000000";
             LoginTokenResponse loginTokenResponse = new LoginTokenResponse(
-                    UUID.fromString("00000000-0000-0000-0000-000000000000"),
-                    1
+                UUID.fromString("00000000-0000-0000-0000-000000000000"),
+                1
             );
             given(jwtUtils.parseLoginToken(accessToken)).willReturn(loginTokenResponse);
             given(authService.findUserByUuid(loginTokenResponse.uuid())).willReturn(user);
 
             // when
-            assertThrows(LoginExpirationException.class, () -> tokenService.generateUserToken(accessToken, password));
+            assertThrows(LoginExpirationException.class,
+                () -> tokenService.generateUserToken(accessToken, password));
 
             // then
             Mockito.verify(jwtUtils, Mockito.times(1)).parseLoginToken(accessToken);
@@ -120,17 +126,18 @@ class TokenServiceImplTest extends TestInitData{
 
     @Nested
     class parseUserToken {
+
         @Test
         void 성공_정상적으로_토큰_파싱됨() {
             // give
             String userToken = createTestUserToken();
             UserTokenResponse userTokenResponse = new UserTokenResponse(
-                    user.getUserId(),
-                    user.getUserCode(),
-                    user.getUserImg(),
-                    user.getUserNickName(),
-                    user.getUserCreatedAt().toString(),
-                    user.getUserCreditRank()
+                user.getUserId(),
+                user.getUserCode(),
+                user.getUserImg(),
+                user.getUserNickName(),
+                user.getUserCreatedAt().toString(),
+                user.getUserCreditRank()
             );
             given(jwtUtils.parseUserToken(userToken)).willReturn(userTokenResponse);
 

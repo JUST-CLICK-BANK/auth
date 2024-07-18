@@ -7,4 +7,5 @@ public record KakaoTokenResponse(
     String refresh_token,
     Integer refresh_token_expires_in
 ) {
+
 }

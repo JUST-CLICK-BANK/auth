@@ -9,8 +9,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
 public class KakaoAuthFeignConfig {
+
     @Bean
     public Encoder multipartFormEncoder() {
-        return new SpringFormEncoder(new SpringEncoder(() -> new HttpMessageConverters(new RestTemplate().getMessageConverters())));
+        return new SpringFormEncoder(new SpringEncoder(
+            () -> new HttpMessageConverters(new RestTemplate().getMessageConverters())));
     }
 }
