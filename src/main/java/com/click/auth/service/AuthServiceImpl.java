@@ -19,7 +19,8 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class AuthServiceImpl implements AuthService{
+public class AuthServiceImpl implements AuthService {
+
     private final UserRepository userRepository;
     private final JwtUtils jwtUtils;
     private final FriendCodeUtils friendCodeUtils;
@@ -28,7 +29,7 @@ public class AuthServiceImpl implements AuthService{
     @Transactional
     public String createUser(UserCreateRequest req) {
         String code = friendCodeUtils.generateCode();
-        while (findUserByCode(code) != null){
+        while (findUserByCode(code) != null) {
             code = friendCodeUtils.generateCode();
         }
         User user = req.toEntity(code);
@@ -39,7 +40,7 @@ public class AuthServiceImpl implements AuthService{
     @Override
     public User findUserByIdentity(String identity, UserIdentityType type) {
         return userRepository.findByUserIdentityAndUserIdentityType(identity, type)
-                .orElse(null);
+            .orElse(null);
     }
 
     @Override
@@ -84,7 +85,7 @@ public class AuthServiceImpl implements AuthService{
     @Override
     @Transactional
     public void updateTokenVersion(UUID id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundExcetion("USER"));
+        User user = findUserByUuid(id);
         user.upTokenVersion();
     }
 

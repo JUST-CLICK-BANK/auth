@@ -13,21 +13,22 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/auth/login")
 @RequiredArgsConstructor
 public class LoginController {
+
     private final LoginService loginService;
 
     @GetMapping("/token")
     public String getLoginToken(
-            @RequestParam("identity") String identity,
-            @RequestParam("type") UserIdentityType type
-    ){
+        @RequestParam("identity") String identity,
+        @RequestParam("type") UserIdentityType type
+    ) {
         return loginService.generateLoginToken(identity, type);
     }
 
     @GetMapping("/kakao")
     public SocialLoginResponse getUserTokenByKakao(
-            @RequestParam(value = "code") String kakaoCode,
-            @RequestParam(value = "isFront", defaultValue = "false") Boolean isFront
-    ){
+        @RequestParam(value = "code") String kakaoCode,
+        @RequestParam(value = "isFront", defaultValue = "false") Boolean isFront
+    ) {
         if (isFront) {
             return loginService.getUserTokenByKakao(kakaoCode);
         }

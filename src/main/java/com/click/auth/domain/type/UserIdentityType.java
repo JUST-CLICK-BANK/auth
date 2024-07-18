@@ -4,6 +4,6 @@ public enum UserIdentityType {
     KAKAO("kakao"),
     NAVER("naver");
 
-    UserIdentityType(String type){
+    UserIdentityType(String type) {
     }
 }
