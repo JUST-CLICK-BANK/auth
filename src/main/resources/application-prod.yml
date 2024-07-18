@@ -18,3 +18,5 @@ jwt:
 kakao:
   client_id: ${kakaoApiKey}
   redirect_uri: ${kakaoRedirectUri}
+hash:
+  iterations: ${hashStretch}
