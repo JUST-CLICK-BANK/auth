@@ -40,7 +40,7 @@ public class User {
     @Column(name = "USER_SIMPLE_PASSWD", nullable = false)
     private String userPasswd;
 
-    @Column(name = "USER_SALT")
+    @Column(name = "USER_SALT", nullable = false)
     private String userSalt;
 
     @Column(name = "USER_CREDIT_RANK", nullable = false)
