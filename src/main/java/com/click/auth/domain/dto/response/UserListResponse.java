@@ -6,6 +6,7 @@ import java.util.UUID;
 
 public record UserListResponse(
     UUID id,
+    String code,
     String img,
     String name
 ) {
@@ -13,6 +14,7 @@ public record UserListResponse(
     public static UserListResponse from(User user) {
         return new UserListResponse(
             user.getUserId(),
+            user.getUserCode(),
             user.getUserImg(),
             user.getUserNickName()
         );
