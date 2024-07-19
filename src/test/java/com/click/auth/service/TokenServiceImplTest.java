@@ -7,6 +7,7 @@ import com.click.auth.exception.LoginExpirationException;
 import com.click.auth.exception.NotFoundExcetion;
 import com.click.auth.exception.PasswordMatchException;
 import com.click.auth.util.JwtUtils;
+import com.click.auth.util.PasswordUtilsImpl;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,9 +16,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.UUID;
-
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,6 +29,8 @@ class TokenServiceImplTest extends TestInitData {
     private AuthServiceImpl authService;
     @Mock
     private JwtUtils jwtUtils;
+    @Mock
+    private PasswordUtilsImpl passwordUtils;
 
     @Nested
     class generateUserToken {
@@ -36,91 +38,99 @@ class TokenServiceImplTest extends TestInitData {
         @Test
         void 성공_정상적으로_토큰_생성됨() {
             // give
-            String accessToken = "QWERASDFZXCVQWERASDFZXCVQWERASDFZXCV";
-            String password = "000000";
-            LoginTokenResponse loginTokenResponse = new LoginTokenResponse(
-                UUID.fromString("00000000-0000-0000-0000-000000000000"),
-                10
-            );
+            String accessToken = "aaaaaaaaaaaaaaaaaa";
+            String password = "00000";
+            String hashedPassword = "ce5fd1da07801ff3a9ea4e1a0c9f3d34b83ed0775f8ecc6efe1642baa815587d";
+            String loginToken = "bbbbbbbbbbbbbbbbbb";
+            LoginTokenResponse loginTokenResponse =
+                new LoginTokenResponse(user.getUserId(), user.getUserTokenVersion());
             given(jwtUtils.parseLoginToken(accessToken)).willReturn(loginTokenResponse);
             given(authService.findUserByUuid(loginTokenResponse.uuid())).willReturn(user);
-            given(jwtUtils.createUserToken(user)).willReturn("aaaaaaaaaaaaaaaaaaaaaaa");
+            given(passwordUtils.passwordHashing(password, user.getUserSalt()))
+                .willReturn(hashedPassword);
+            given(jwtUtils.createUserToken(user)).willReturn(loginToken);
 
             // when
             String response = tokenService.generateUserToken(accessToken, password);
 
             // then
-            Mockito.verify(jwtUtils, Mockito.times(1)).parseLoginToken(accessToken);
-            Mockito.verify(authService, Mockito.times(1)).findUserByUuid(loginTokenResponse.uuid());
-            Mockito.verify(jwtUtils, Mockito.times(1)).createUserToken(user);
-            assertEquals("aaaaaaaaaaaaaaaaaaaaaaa", response);
+            Mockito.verify(authService, Mockito.times(1))
+                .findUserByUuid(loginTokenResponse.uuid());
+            Mockito.verify(passwordUtils, Mockito.times(1))
+                .passwordHashing(password, user.getUserSalt());
+            assertEquals(loginToken, response);
         }
 
         @Test
         void 실패_유저가_존재하지_않음() {
             // give
-            String accessToken = "QWERASDFZXCVQWERASDFZXCVQWERASDFZXCV";
-            String password = "000000";
-            LoginTokenResponse loginTokenResponse = new LoginTokenResponse(
-                UUID.fromString("00000000-0000-0000-0000-000000000000"),
-                10
-            );
+            String accessToken = "zzzzzzzzzzzzzzzzzzz";
+            String password = "00000";
+            LoginTokenResponse loginTokenResponse =
+                new LoginTokenResponse(user.getUserId(), user.getUserTokenVersion());
             given(jwtUtils.parseLoginToken(accessToken)).willReturn(loginTokenResponse);
-            given(authService.findUserByUuid(loginTokenResponse.uuid())).willThrow(
-                NotFoundExcetion.class);
+            given(authService.findUserByUuid(loginTokenResponse.uuid()))
+                .willThrow(NotFoundExcetion.class);
 
             // when
             assertThrows(NotFoundExcetion.class,
                 () -> tokenService.generateUserToken(accessToken, password));
 
             // then
-            Mockito.verify(jwtUtils, Mockito.times(1)).parseLoginToken(accessToken);
-            Mockito.verify(authService, Mockito.times(1)).findUserByUuid(loginTokenResponse.uuid());
-            Mockito.verify(jwtUtils, Mockito.times(0)).createUserToken(user);
+            Mockito.verify(authService, Mockito.times(1))
+                .findUserByUuid(loginTokenResponse.uuid());
+            Mockito.verify(passwordUtils, Mockito.times(0))
+                .passwordHashing(password, user.getUserSalt());
         }
 
         @Test
-        void 실패_간편비밀번호가_일치하지_않음() {
+        void 실패_비밀번호가_일치하지_않음() {
             // give
-            String accessToken = "QWERASDFZXCVQWERASDFZXCVQWERASDFZXCV";
-            String password = "111111";
-            LoginTokenResponse loginTokenResponse = new LoginTokenResponse(
-                UUID.fromString("00000000-0000-0000-0000-000000000000"),
-                10
-            );
+            String accessToken = "aaaaaaaaaaaaaaaaaa";
+            String password = "11111";
+            String hashedPassword = "ce5fd1da07801ff3a9ea4e1a0c9f3d34b83ed0775f8ecc6efe1642baa815587d";
+            LoginTokenResponse loginTokenResponse =
+                new LoginTokenResponse(user.getUserId(), 0);
             given(jwtUtils.parseLoginToken(accessToken)).willReturn(loginTokenResponse);
             given(authService.findUserByUuid(loginTokenResponse.uuid())).willReturn(user);
-
-            // when
-            assertThrows(PasswordMatchException.class,
-                () -> tokenService.generateUserToken(accessToken, password));
-
-            // then
-            Mockito.verify(jwtUtils, Mockito.times(1)).parseLoginToken(accessToken);
-            Mockito.verify(authService, Mockito.times(1)).findUserByUuid(loginTokenResponse.uuid());
-            Mockito.verify(jwtUtils, Mockito.times(0)).createUserToken(user);
-        }
-
-        @Test
-        void 실패_로그인토큰_버전이_일치하지_않음() {
-            // give
-            String accessToken = "QWERASDFZXCVQWERASDFZXCVQWERASDFZXCV";
-            String password = "000000";
-            LoginTokenResponse loginTokenResponse = new LoginTokenResponse(
-                UUID.fromString("00000000-0000-0000-0000-000000000000"),
-                1
-            );
-            given(jwtUtils.parseLoginToken(accessToken)).willReturn(loginTokenResponse);
-            given(authService.findUserByUuid(loginTokenResponse.uuid())).willReturn(user);
+            given(passwordUtils.passwordHashing(password, user.getUserSalt()))
+                .willReturn(hashedPassword);
 
             // when
             assertThrows(LoginExpirationException.class,
                 () -> tokenService.generateUserToken(accessToken, password));
 
             // then
-            Mockito.verify(jwtUtils, Mockito.times(1)).parseLoginToken(accessToken);
-            Mockito.verify(authService, Mockito.times(1)).findUserByUuid(loginTokenResponse.uuid());
-            Mockito.verify(jwtUtils, Mockito.times(0)).createUserToken(user);
+            Mockito.verify(authService, Mockito.times(1))
+                .findUserByUuid(loginTokenResponse.uuid());
+            Mockito.verify(passwordUtils, Mockito.times(1))
+                .passwordHashing(password, user.getUserSalt());
+            Mockito.verify(jwtUtils, Mockito.times(0)).parseUserToken(any());
+        }
+
+        @Test
+        void 실패_토큰버전이_일치하지_않음() {
+            // give
+            String accessToken = "aaaaaaaaaaaaaaaaaa";
+            String password = "00000";
+            String hashedPassword = "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz";
+            LoginTokenResponse loginTokenResponse =
+                new LoginTokenResponse(user.getUserId(), user.getUserTokenVersion());
+            given(jwtUtils.parseLoginToken(accessToken)).willReturn(loginTokenResponse);
+            given(authService.findUserByUuid(loginTokenResponse.uuid())).willReturn(user);
+            given(passwordUtils.passwordHashing(password, user.getUserSalt()))
+                .willReturn(hashedPassword);
+
+            // when
+            assertThrows(PasswordMatchException.class,
+                () -> tokenService.generateUserToken(accessToken, password));
+
+            // then
+            Mockito.verify(authService, Mockito.times(1))
+                .findUserByUuid(loginTokenResponse.uuid());
+            Mockito.verify(passwordUtils, Mockito.times(1))
+                .passwordHashing(password, user.getUserSalt());
+            Mockito.verify(jwtUtils, Mockito.times(0)).parseUserToken(any());
         }
     }
 
