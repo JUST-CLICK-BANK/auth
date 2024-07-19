@@ -179,6 +179,39 @@ class AuthServiceImplTest extends TestInitData {
     }
 
     @Nested
+    class findUsersByCodes {
+
+        @Test
+        void 성공_정상적으로_유저목록_반환함() {
+            // give
+            String[] codes = new String[]{"AAAAA"};
+            given(userRepository.findAllByUserCodeIn(codes)).willReturn(List.of(user));
+
+            // when
+            List<UserListResponse> response = authService.findUsersByCodes(codes);
+
+            // then
+            Mockito.verify(userRepository, Mockito.times(1)).findAllByUserCodeIn(codes);
+            assertEquals(1, response.size());
+            assertEquals(user.getUserId(), response.get(0).id());
+        }
+
+        @Test
+        void 성공_해당하는_유저가_없어서_빈_리스트_반환함() {
+            // give
+            String[] codes = new String[]{};
+            given(userRepository.findAllByUserCodeIn(codes)).willReturn(List.of());
+
+            // when
+            List<UserListResponse> response = authService.findUsersByCodes(codes);
+
+            // then
+            Mockito.verify(userRepository, Mockito.times(1)).findAllByUserCodeIn(codes);
+            assertEquals(0, response.size());
+        }
+    }
+
+    @Nested
     class updateUserImage {
 
         @Test
