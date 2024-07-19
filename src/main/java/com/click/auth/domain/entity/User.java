@@ -13,7 +13,9 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Table(name = "USERS")
+@Table(name = "USERS", indexes = {
+    @Index(name = "CODE_INDEX", columnList = "USER_CODE", unique = true),
+    @Index(name = "IDENTITY_INDEX", columnList = "USER_IDENTITY", unique = true)})
 public class User {
 
     @Id
@@ -56,8 +58,9 @@ public class User {
     private Boolean isDisable;
 
 
-    public void setPassword(String password) {
+    public void setPassword(String password, String salt) {
         userPasswd = password;
+        userSalt = salt;
     }
 
     public void setImage(String image) {
