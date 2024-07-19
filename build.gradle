@@ -65,16 +65,16 @@ jacocoTestCoverageVerification{
 				maximum = 100
 			}
 		}
-//		rule {
-//			element = 'CLASS'
-//			includes = [
-//					'com.example.toto.service.**'
-//			]
-//			limit {
-//				value = 'COVEREDRATIO'
-//				minimum = 0.8
-//			}
-//		}
+		rule {
+			element = 'CLASS'
+			includes = [
+					'com.example.toto.service.**'
+			]
+			limit {
+				value = 'COVEREDRATIO'
+				minimum = 0.9
+			}
+		}
 	}
 }
 
