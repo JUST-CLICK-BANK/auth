@@ -58,8 +58,9 @@ public class User {
     private Boolean isDisable;
 
 
-    public void setPassword(String password) {
+    public void setPassword(String password, String salt) {
         userPasswd = password;
+        userSalt = salt;
     }
 
     public void setImage(String image) {

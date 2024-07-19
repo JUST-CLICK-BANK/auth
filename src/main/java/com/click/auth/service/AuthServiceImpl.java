@@ -42,8 +42,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public User findUserByIdentity(String identity, UserIdentityType type) {
-        return userRepository.findByUserIdentityAndUserIdentityType(identity, type)
-            .orElse(null);
+        return userRepository.findByUserIdentityAndUserIdentityType(identity, type).orElse(null);
     }
 
     @Override
@@ -81,7 +80,8 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public void updateUserPassword(UUID id, String password) {
         User user = findUserByUuid(id);
-        user.setPassword(password);
+        String salt = passwordUtils.generateSalt();
+        user.setPassword(passwordUtils.passwordHashing(password, salt), salt);
         user.upTokenVersion();
     }
 
