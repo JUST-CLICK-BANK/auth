@@ -19,9 +19,10 @@ public class LoginController {
     @GetMapping("/login/token")
     public String getLoginToken(
         @RequestParam("identity") String identity,
-        @RequestParam("type") UserIdentityType type
+        @RequestParam("type") UserIdentityType type,
+        @RequestParam(value = "image", required = false) String image
     ) {
-        return loginService.generateLoginToken(identity, type);
+        return loginService.generateLoginToken(identity, type, image);
     }
 
     @GetMapping("/login/kakao")
