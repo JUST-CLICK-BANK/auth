@@ -45,6 +45,7 @@ dependencies {
 	testImplementation 'org.springframework.kafka:spring-kafka-test'
 //	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	testRuntimeOnly 'com.h2database:h2'
 }
 
 dependencyManagement {
@@ -64,16 +65,16 @@ jacocoTestCoverageVerification{
 				maximum = 100
 			}
 		}
-//		rule {
-//			element = 'CLASS'
-//			includes = [
-//					'com.example.toto.service.**'
-//			]
-//			limit {
-//				value = 'COVEREDRATIO'
-//				minimum = 0.8
-//			}
-//		}
+		rule {
+			element = 'CLASS'
+			includes = [
+					'com.example.toto.service.**'
+			]
+			limit {
+				value = 'COVEREDRATIO'
+				minimum = 0.9
+			}
+		}
 	}
 }
 
