@@ -123,7 +123,7 @@ class LoginServiceImplTest extends TestInitData {
             String identity = "3611111111";
             UserIdentityType type = UserIdentityType.KAKAO;
             String image = "newimage.png";
-            given(authService.findUserByIdentity(identity, type)).willThrow(NotFoundExcetion.class);
+            given(authService.findUserByIdentity(identity, type)).willReturn(null);
 
             // when
             assertThrows(NotFoundExcetion.class,
