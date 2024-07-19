@@ -9,7 +9,8 @@ public record UserCreateRequest(
         String identity,
         UserIdentityType type,
         String nickname,
-        String passwd
+        String passwd,
+        String image
 ) {
     public User toEntity(String code, String salt) {
         return new User(
@@ -17,7 +18,7 @@ public record UserCreateRequest(
                 identity,
                 type,
                 code,
-                "",
+                image,
                 nickname,
                 passwd,
                 salt,
