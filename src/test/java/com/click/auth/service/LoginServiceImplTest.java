@@ -28,7 +28,6 @@ import org.slf4j.LoggerFactory;
 @ExtendWith(MockitoExtension.class)
 class LoginServiceImplTest extends TestInitData {
 
-    private static final Logger log = LoggerFactory.getLogger(LoginServiceImplTest.class);
     @InjectMocks
     @Spy
     private LoginServiceImpl loginService;

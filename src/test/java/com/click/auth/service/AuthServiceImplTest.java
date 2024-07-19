@@ -170,14 +170,8 @@ class AuthServiceImplTest extends TestInitData {
         void 성공_아무것도_찾지_못해서_NULL_반환() {
             // give
             String code = "BBBBB";
-            UserResponse res = new UserResponse(
-                user.getUserId(),
-                user.getUserCode(),
-                user.getUserImg(),
-                user.getUserNickName(),
-                user.getUserCreatedAt()
-            );
             given(userRepository.findByUserCode(code)).willReturn(Optional.empty());
+
             // when
             UserResponse response = authService.findUserByCode(code);
 
