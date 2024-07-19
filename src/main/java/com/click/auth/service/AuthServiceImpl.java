@@ -34,7 +34,8 @@ public class AuthServiceImpl implements AuthService {
         while (findUserByCode(code) != null) {
             code = friendCodeUtils.generateCode();
         }
-        User user = req.toEntity(code, passwordUtils.generateSalt());
+        String salt = passwordUtils.generateSalt();
+        User user = req.toEntity(code, passwordUtils.passwordHashing(req.passwd(), salt), salt);
         userRepository.save(user);
         return jwtUtils.createLoginToken(LoginTokenResponse.from(user));
     }
