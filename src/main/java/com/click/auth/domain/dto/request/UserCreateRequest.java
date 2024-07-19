@@ -6,24 +6,27 @@ import com.click.auth.domain.type.UserIdentityType;
 import java.time.LocalDateTime;
 
 public record UserCreateRequest(
-        String identity,
-        UserIdentityType type,
-        String nickname,
-        String passwd
+    String identity,
+    UserIdentityType type,
+    String nickname,
+    String passwd,
+    String image
 ) {
-    public User toEntity(String code) {
+
+    public User toEntity(String code, String hashedPassword, String salt) {
         return new User(
-                null,
-                identity,
-                type,
-                code,
-                "",
-                nickname,
-                passwd,
-                700,
-                LocalDateTime.now(),
-                1,
-                false
+            null,
+            identity,
+            type,
+            code,
+            image,
+            nickname,
+            hashedPassword,
+            salt,
+            700,
+            LocalDateTime.now(),
+            1,
+            false
         );
     }
 }

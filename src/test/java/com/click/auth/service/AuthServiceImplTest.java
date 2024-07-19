@@ -24,7 +24,9 @@ import static org.mockito.BDDMockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceImplTest extends TestInitData {
-    @InjectMocks @Spy
+
+    @InjectMocks
+    @Spy
     private AuthServiceImpl authService;
     @Mock
     private UserRepository userRepository;
@@ -35,19 +37,22 @@ class AuthServiceImplTest extends TestInitData {
 
     @Nested
     class createUser {
+
         @Test
         void 성공_정상적으로_유저_생성됨() {
             // give
             UserCreateRequest req = new UserCreateRequest(
-                    "3600000000",
-                    UserIdentityType.KAKAO,
-                    "수진",
-                    "000000"
+                "3600000000",
+                UserIdentityType.KAKAO,
+                "수진",
+                "000000"
             );
             String code = "AAAAA";
             given(friendCodeUtils.generateCode()).willReturn(code);
             doReturn(null).when(authService).findUserByCode(code);
-            given(jwtUtils.createLoginToken(LoginTokenResponse.from(req.toEntity(code)))).willReturn("aaaaaaaaaaaaaaaaa");
+            given(
+                jwtUtils.createLoginToken(LoginTokenResponse.from(req.toEntity(code)))).willReturn(
+                "aaaaaaaaaaaaaaaaa");
 
             // when
             String response = authService.createUser(req);
@@ -61,18 +66,21 @@ class AuthServiceImplTest extends TestInitData {
 
     @Nested
     class findUserByIdentity {
+
         @Test
         void 성공_정상적으로_찾아서_유저_반환() {
             // give
             String identity = "3600000000";
             UserIdentityType type = UserIdentityType.KAKAO;
-            given(userRepository.findByUserIdentityAndUserIdentityType(identity, type)).willReturn(Optional.of(user));
+            given(userRepository.findByUserIdentityAndUserIdentityType(identity, type)).willReturn(
+                Optional.of(user));
 
             // when
             User response = authService.findUserByIdentity(identity, type);
 
             // then
-            Mockito.verify(userRepository, Mockito.times(1)).findByUserIdentityAndUserIdentityType(identity,type);
+            Mockito.verify(userRepository, Mockito.times(1))
+                .findByUserIdentityAndUserIdentityType(identity, type);
             assertEquals(user.getUserId(), response.getUserId());
         }
 
@@ -81,19 +89,22 @@ class AuthServiceImplTest extends TestInitData {
             // give
             String identity = "0000000000";
             UserIdentityType type = UserIdentityType.KAKAO;
-            given(userRepository.findByUserIdentityAndUserIdentityType(identity, type)).willReturn(Optional.empty());
+            given(userRepository.findByUserIdentityAndUserIdentityType(identity, type)).willReturn(
+                Optional.empty());
 
             // when
             User response = authService.findUserByIdentity(identity, type);
 
             // then
-            Mockito.verify(userRepository, Mockito.times(1)).findByUserIdentityAndUserIdentityType(identity,type);
+            Mockito.verify(userRepository, Mockito.times(1))
+                .findByUserIdentityAndUserIdentityType(identity, type);
             assertNull(response);
         }
     }
 
     @Nested
     class findUserByUuid {
+
         @Test
         void 성공_정상적으로_찾아서_유저_반환() {
             // give
@@ -124,16 +135,17 @@ class AuthServiceImplTest extends TestInitData {
 
     @Nested
     class findUserByCode {
+
         @Test
         void 성공_정상적으로_찾아서_유저_반환() {
             // give
             String code = "AAAAA";
             UserResponse res = new UserResponse(
-                    user.getUserId(),
-                    user.getUserCode(),
-                    user.getUserImg(),
-                    user.getUserNickName(),
-                    user.getUserCreatedAt()
+                user.getUserId(),
+                user.getUserCode(),
+                user.getUserImg(),
+                user.getUserNickName(),
+                user.getUserCreatedAt()
             );
             given(userRepository.findByUserCode(code)).willReturn(Optional.of(user));
 
@@ -150,11 +162,11 @@ class AuthServiceImplTest extends TestInitData {
             // give
             String code = "BBBBB";
             UserResponse res = new UserResponse(
-                    user.getUserId(),
-                    user.getUserCode(),
-                    user.getUserImg(),
-                    user.getUserNickName(),
-                    user.getUserCreatedAt()
+                user.getUserId(),
+                user.getUserCode(),
+                user.getUserImg(),
+                user.getUserNickName(),
+                user.getUserCreatedAt()
             );
             given(userRepository.findByUserCode(code)).willReturn(Optional.empty());
             // when
@@ -168,6 +180,7 @@ class AuthServiceImplTest extends TestInitData {
 
     @Nested
     class updateUserImage {
+
         @Test
         void 성공_이미지가_업데이트됨() {
             // give
@@ -200,6 +213,7 @@ class AuthServiceImplTest extends TestInitData {
 
     @Nested
     class updateUserNickname {
+
         @Test
         void 성공_닉네임이_업데이트됨() {
             // give
@@ -232,6 +246,7 @@ class AuthServiceImplTest extends TestInitData {
 
     @Nested
     class updateUserPassword {
+
         @Test
         void 성공_비밀번호가_업데이트됨() {
             // give
@@ -255,7 +270,8 @@ class AuthServiceImplTest extends TestInitData {
             doThrow(NotFoundExcetion.class).when(authService).findUserByUuid(id);
 
             // when
-            assertThrows(NotFoundExcetion.class, () -> authService.updateUserPassword(id, password));
+            assertThrows(NotFoundExcetion.class,
+                () -> authService.updateUserPassword(id, password));
 
             // then
             Mockito.verify(authService, Mockito.times(1)).findUserByUuid(id);
@@ -264,6 +280,7 @@ class AuthServiceImplTest extends TestInitData {
 
     @Nested
     class updateTokenVersion {
+
         @Test
         void 성공_토큰_버전이_1_올라감() {
             // give
@@ -294,6 +311,7 @@ class AuthServiceImplTest extends TestInitData {
 
     @Nested
     class disableUser {
+
         @Test
         void 성공_유저를_찾아_비활성화함() {
             // give

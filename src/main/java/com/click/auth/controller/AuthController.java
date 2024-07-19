@@ -15,6 +15,7 @@ import java.util.UUID;
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthController {
+
     private final AuthService authService;
 
     @GetMapping("/version")
@@ -33,36 +34,36 @@ public class AuthController {
     }
 
     @GetMapping("/friends")
-    public List<UserListResponse> findFriendInfoList(@RequestParam("codes") String[] codes){
+    public List<UserListResponse> findFriendInfoList(@RequestParam("codes") String[] codes) {
         return authService.findUsersByCodes(codes);
     }
 
     @PutMapping("/{id}/image")
     public void updateUserImage(
-            @PathVariable("id") UUID id,
-            @RequestBody UserUpdateRequest req
+        @PathVariable("id") UUID id,
+        @RequestBody UserUpdateRequest req
     ) {
         authService.updateUserImage(id, req.data());
     }
 
     @PutMapping("/{id}/nickname")
     public void updateUserNickname(
-            @PathVariable("id") UUID id,
-            @RequestBody UserUpdateRequest req
-    ){
+        @PathVariable("id") UUID id,
+        @RequestBody UserUpdateRequest req
+    ) {
         authService.updateUserNickname(id, req.data());
     }
 
     @PutMapping("/{id}/password")
     public void changePassword(
-            @PathVariable("id") UUID id,
-            @RequestBody UserUpdateRequest req
-    ){
+        @PathVariable("id") UUID id,
+        @RequestBody UserUpdateRequest req
+    ) {
         authService.updateUserPassword(id, req.data());
     }
 
     @PutMapping("/{id}/token")
-    public void updateTokenVersion(@PathVariable("id") UUID id){
+    public void updateTokenVersion(@PathVariable("id") UUID id) {
         authService.updateTokenVersion(id);
     }
 

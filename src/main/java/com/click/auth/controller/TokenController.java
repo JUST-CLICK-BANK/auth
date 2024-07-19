@@ -9,13 +9,14 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/auth/token")
 @RequiredArgsConstructor
 public class TokenController {
+
     private final TokenService tokenService;
 
     @GetMapping
     public String getUserToken(
-            @RequestParam("token") String token,
-            @RequestParam("password") String password
-    ){
+        @RequestParam("token") String token,
+        @RequestParam("password") String password
+    ) {
         return tokenService.generateUserToken(token, password);
     }
 

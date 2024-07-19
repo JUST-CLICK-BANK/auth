@@ -10,27 +10,33 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/auth/login")
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class LoginController {
+
     private final LoginService loginService;
 
-    @GetMapping("/token")
+    @GetMapping("/login/token")
     public String getLoginToken(
-            @RequestParam("identity") String identity,
-            @RequestParam("type") UserIdentityType type
-    ){
-        return loginService.generateLoginToken(identity, type);
+        @RequestParam("identity") String identity,
+        @RequestParam("type") UserIdentityType type,
+        @RequestParam(value = "image", required = false) String image
+    ) {
+        return loginService.generateLoginToken(identity, type, image);
     }
 
-    @GetMapping("/kakao")
+    @GetMapping("/login/kakao")
     public SocialLoginResponse getUserTokenByKakao(
-            @RequestParam(value = "code") String kakaoCode,
-            @RequestParam(value = "isFront", defaultValue = "false") Boolean isFront
-    ){
+        @RequestParam(value = "code") String kakaoCode,
+        @RequestParam(value = "isFront", defaultValue = "false") Boolean isFront
+    ) {
         if (isFront) {
             return loginService.getUserTokenByKakao(kakaoCode);
         }
         return null;
+    }
+
+    @GetMapping("/logout/kakao")
+    public void logoutByKakao() {
     }
 }

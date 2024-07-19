@@ -16,7 +16,7 @@ public interface KakaoApiFeign {
 
     @PostMapping(value = "/v2/user/me", consumes = "application/x-www-form-urlencoded;charset=utf-8")
     KakaoUserInfoResponse getKakaoUserInfo(
-            @RequestHeader("Authorization") String token,
-            @RequestParam("property_keys") String property_keys
+        @RequestHeader("Authorization") String token,
+        @RequestParam("property_keys") String property_keys
     );
 }
