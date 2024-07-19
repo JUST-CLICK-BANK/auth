@@ -16,8 +16,11 @@ public class LoginServiceImpl implements LoginService{
     private final JwtUtils jwtUtils;
 
     @Override
-    public String generateLoginToken(String identity, UserIdentityType type) {
+    public String generateLoginToken(String identity, UserIdentityType type, String image) {
         User user = authService.findUserByIdentity(identity, type);
+        if (image != null && !image.equals(user.getUserImg())) {
+            authService.updateUserImage(user.getUserId(), image);
+        }
         return jwtUtils.createLoginToken(LoginTokenResponse.from(user));
     }
 
