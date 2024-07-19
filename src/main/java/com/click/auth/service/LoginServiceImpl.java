@@ -10,7 +10,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class LoginServiceImpl implements LoginService{
+public class LoginServiceImpl implements LoginService {
+
     private final AuthService authService;
     private final KaKaoApi kaKaoApi;
     private final JwtUtils jwtUtils;
@@ -30,7 +31,8 @@ public class LoginServiceImpl implements LoginService{
 //        KakaoTokenInfoResponse kakaoTokenInfo = getKakaoTokenInfo(kakaoToken);
 //        User userByIdentity = authService.findUserByIdentity(kakaoTokenInfo.id().toString(), UserIdentityType.KAKAO);
         KakaoUserInfoResponse kakaoUserInfoResponse = getKakaoUserInfo(kakaoToken.access_token());
-        User userByIdentity = authService.findUserByIdentity(kakaoUserInfoResponse.id().toString(), UserIdentityType.KAKAO);
+        User userByIdentity = authService.findUserByIdentity(kakaoUserInfoResponse.id().toString(),
+            UserIdentityType.KAKAO);
         if (userByIdentity == null) {
             return SocialLoginResponse.from(kakaoUserInfoResponse, false);
         }
