@@ -23,35 +23,35 @@ public class User {
     @Column(name = "USER_ID")
     private UUID userId;
 
-    @Column(name = "USER_IDENTITY", nullable = false)
+    @Column(name = "USER_IDENTITY")
     private String userIdentity;
 
-    @Column(name = "USER_IDENTITY_TYPE", nullable = false)
+    @Column(name = "USER_IDENTITY_TYPE")
     @Enumerated(EnumType.STRING)
     private UserIdentityType userIdentityType;
 
-    @Column(name = "USER_CODE", nullable = false)
+    @Column(name = "USER_CODE")
     private String userCode;
 
     @Column(name = "USER_PROFILE_IMG")
     private String userImg;
 
-    @Column(name = "USER_NICK_NAME", nullable = false)
+    @Column(name = "USER_NICK_NAME")
     private String userNickName;
 
-    @Column(name = "USER_SIMPLE_PASSWD", nullable = false)
+    @Column(name = "USER_SIMPLE_PASSWD")
     private String userPasswd;
 
-    @Column(name = "USER_SALT", nullable = false)
+    @Column(name = "USER_SALT")
     private String userSalt;
 
-    @Column(name = "USER_CREDIT_RANK", nullable = false)
+    @Column(name = "USER_CREDIT_RANK")
     private Integer userCreditRank;
 
     @Column(name = "USER_CREATED_AT", nullable = false)
     private LocalDateTime userCreatedAt;
 
-    @Column(name = "USER_TOKEN_VERSION", nullable = false)
+    @Column(name = "USER_TOKEN_VERSION")
     private Integer userTokenVersion;
 
     @Column(name = "USER_DISABLE", nullable = false)
@@ -80,6 +80,15 @@ public class User {
     }
 
     public void disable() {
+        userIdentity = null;
+        userIdentityType = null;
+        userCode = null;
+        userImg = null;
+        userNickName = null;
+        userPasswd = null;
+        userSalt = null;
+        userCreditRank = null;
+        userTokenVersion = null;
         isDisable = true;
     }
 }
