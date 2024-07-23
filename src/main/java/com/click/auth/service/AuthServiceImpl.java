@@ -24,15 +24,14 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
     private final JwtUtils jwtUtils;
-    private final FriendCodeUtils friendCodeUtils;
     private final PasswordUtils passwordUtils;
 
     @Override
     @Transactional
     public String createUser(UserCreateRequest req) {
-        String code = friendCodeUtils.generateCode();
+        String code = FriendCodeUtils.generateCode();
         while (findUserByCode(code) != null) {
-            code = friendCodeUtils.generateCode();
+            code = FriendCodeUtils.generateCode();
         }
         String salt = passwordUtils.generateSalt();
         User user = req.toEntity(code, passwordUtils.passwordHashing(req.passwd(), salt), salt);
