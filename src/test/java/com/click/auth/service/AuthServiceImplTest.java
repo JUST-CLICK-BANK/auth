@@ -34,8 +34,6 @@ class AuthServiceImplTest extends TestInitData {
     @Mock
     private UserRepository userRepository;
     @Mock
-    private FriendCodeUtils friendCodeUtils;
-    @Mock
     private PasswordUtils passwordUtils;
     @Mock
     private JwtUtils jwtUtils;
@@ -56,7 +54,8 @@ class AuthServiceImplTest extends TestInitData {
             String code = "AAAAA";
             String hash = "7edd3bf09fdc20c7c93d0a74700a31d85486f95ee849ebaf776ea30d3108e24b";
             String salt = "58c2fec6f6204220";
-            given(friendCodeUtils.generateCode()).willReturn(code);
+            MockedStatic<FriendCodeUtils> friendCodeUtils = mockStatic(FriendCodeUtils.class);
+            given(FriendCodeUtils.generateCode()).willReturn(code);
             doReturn(null).when(authService).findUserByCode(code);
             given(passwordUtils.generateSalt()).willReturn(salt);
             given(jwtUtils.createLoginToken(
@@ -67,7 +66,6 @@ class AuthServiceImplTest extends TestInitData {
             String response = authService.createUser(req);
 
             // then
-            Mockito.verify(friendCodeUtils, Mockito.times(1)).generateCode();
             Mockito.verify(authService, Mockito.times(1)).findUserByCode(code);
             assertEquals("aaaaaaaaaaaaaaaaa", response);
         }
