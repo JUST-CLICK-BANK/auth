@@ -1,13 +1,12 @@
 package com.click.auth.service;
 
+import com.click.auth.domain.dao.UserDao;
 import com.click.auth.domain.dto.response.LoginTokenResponse;
 import com.click.auth.domain.dto.request.UserCreateRequest;
 import com.click.auth.domain.dto.response.UserListResponse;
 import com.click.auth.domain.dto.response.UserResponse;
 import com.click.auth.domain.entity.User;
-import com.click.auth.domain.repository.UserRepository;
 import com.click.auth.domain.type.UserIdentityType;
-import com.click.auth.exception.NotFoundExcetion;
 import com.click.auth.util.FriendCodeUtils;
 import com.click.auth.util.JwtUtils;
 import com.click.auth.util.PasswordUtils;
@@ -22,7 +21,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    private final UserRepository userRepository;
+    private final UserDao userDao;
     private final JwtUtils jwtUtils;
     private final PasswordUtils passwordUtils;
 
@@ -34,67 +33,59 @@ public class AuthServiceImpl implements AuthService {
             code = FriendCodeUtils.generateCode();
         }
         User user = req.toEntity(code, passwordUtils);
-        userRepository.save(user);
+        userDao.insertUser(user);
         LoginTokenResponse tokenResponse = LoginTokenResponse.from(user);
         return jwtUtils.createLoginToken(tokenResponse);
     }
 
     @Override
     public User findUserByIdentity(String identity, UserIdentityType type) {
-        return userRepository.findByUserIdentityAndUserIdentityType(identity, type).orElse(null);
+        return userDao.selectUser(identity, type);
     }
 
     @Override
     public User findUserByUuid(UUID userId) {
-        return userRepository.findById(userId).orElseThrow(() -> new NotFoundExcetion(("USER")));
+        return userDao.selectUser(userId);
     }
 
     @Override
     public UserResponse findUserByCode(String code) {
-        return UserResponse.from(userRepository.findByUserCode(code).orElse(null));
+        return UserResponse.from(userDao.selectUser(code));
     }
 
     @Override
     public List<UserListResponse> findUsersByCodes(String[] codes) {
-        List<User> allByUserCode = userRepository.findAllByUserCodeIn(codes);
+        List<User> allByUserCode = userDao.selectAllUser(codes);
         return allByUserCode.stream().map(UserListResponse::from).toList();
-//        return userRepository.findAllByUserCode(codes).stream().map(UserListResponse::from).toList();
     }
 
     @Override
     @Transactional
     public void updateUserImage(UUID id, String image) {
-        User user = findUserByUuid(id);
-        user.setImage(image);
+        userDao.updateUserImage(id, image);
     }
 
     @Override
     @Transactional
     public void updateUserNickname(UUID id, String name) {
-        User user = findUserByUuid(id);
-        user.setNickname(name);
+        userDao.updateUserNickname(id, name);
     }
 
     @Override
     @Transactional
     public void updateUserPassword(UUID id, String password) {
-        User user = findUserByUuid(id);
-        String salt = passwordUtils.generateSalt();
-        user.setPassword(passwordUtils.passwordHashing(password, salt), salt);
-        user.upTokenVersion();
+        userDao.updateUserPassword(id, password);
     }
 
     @Override
     @Transactional
     public void updateTokenVersion(UUID id) {
-        User user = findUserByUuid(id);
-        user.upTokenVersion();
+        userDao.updateUserTokenVersion(id);
     }
 
     @Override
     @Transactional
     public void disableUser(UUID id) {
-        User user = findUserByUuid(id);
-        user.disable();
+        userDao.deleteUser(id);
     }
 }
