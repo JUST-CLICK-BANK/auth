@@ -15,5 +15,5 @@ public interface UserRepository
 
     Optional<User> findByUserCode(String code);
 
-    List<User> findAllByUserCodeIn(String[] code);
+    List<User> findAllByUserCodeInAndIsDisable(String[] code, boolean isDisable);
 }

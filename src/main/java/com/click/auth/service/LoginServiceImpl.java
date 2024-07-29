@@ -1,6 +1,7 @@
 package com.click.auth.service;
 
 import com.click.auth.api.kakao.KaKaoApi;
+import com.click.auth.domain.dao.UserDao;
 import com.click.auth.domain.dto.response.*;
 import com.click.auth.domain.entity.User;
 import com.click.auth.domain.type.UserIdentityType;
@@ -13,18 +14,15 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class LoginServiceImpl implements LoginService {
 
-    private final AuthService authService;
+    private final UserDao userDao;
     private final KaKaoApi kaKaoApi;
     private final JwtUtils jwtUtils;
 
     @Override
     public String generateLoginToken(String identity, UserIdentityType type, String image) {
-        User user = authService.findUserByIdentity(identity, type);
-        if (user == null) {
-            throw new NotFoundExcetion("USER");
-        }
+        User user = userDao.selectUser(identity, type);
         if (image != null && !image.equals(user.getUserImg())) {
-            authService.updateUserImage(user.getUserId(), image);
+            userDao.updateUserImage(user.getUserId(), image);
         }
         return jwtUtils.createLoginToken(LoginTokenResponse.from(user));
     }
@@ -33,12 +31,12 @@ public class LoginServiceImpl implements LoginService {
     public SocialLoginResponse getUserTokenByKakao(String authCode) {
         KakaoTokenResponse kakaoToken = getKakaoToken(authCode);
         KakaoUserInfoResponse kakaoUserInfoResponse = getKakaoUserInfo(kakaoToken.access_token());
-        User userByIdentity = authService.findUserByIdentity(kakaoUserInfoResponse.id().toString(),
-            UserIdentityType.KAKAO);
-        if (userByIdentity == null) {
+        try {
+            userDao.selectUser(kakaoUserInfoResponse.id().toString(), UserIdentityType.KAKAO);
+            return SocialLoginResponse.from(kakaoUserInfoResponse, true);
+        } catch (NotFoundExcetion e) {
             return SocialLoginResponse.from(kakaoUserInfoResponse, false);
         }
-        return SocialLoginResponse.from(kakaoUserInfoResponse, true);
     }
 
     public KakaoTokenResponse getKakaoToken(String authCode) {
