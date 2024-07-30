@@ -1,25 +1,25 @@
 package com.click.auth.service;
 
 import com.click.auth.TestInitData;
+import com.click.auth.domain.dao.UserDao;
 import com.click.auth.domain.dto.request.UserCreateRequest;
 import com.click.auth.domain.dto.response.LoginTokenResponse;
 import com.click.auth.domain.dto.response.UserListResponse;
 import com.click.auth.domain.dto.response.UserResponse;
 import com.click.auth.domain.entity.User;
-import com.click.auth.domain.repository.UserRepository;
 import com.click.auth.domain.type.UserIdentityType;
 import com.click.auth.exception.NotFoundExcetion;
 import com.click.auth.util.FriendCodeUtils;
 import com.click.auth.util.JwtUtils;
 import com.click.auth.util.PasswordUtils;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,7 +32,7 @@ class AuthServiceImplTest extends TestInitData {
     @Spy
     private AuthServiceImpl authService;
     @Mock
-    private UserRepository userRepository;
+    private UserDao userDao;
     @Mock
     private PasswordUtils passwordUtils;
     @Mock
@@ -56,7 +56,7 @@ class AuthServiceImplTest extends TestInitData {
             String salt = "58c2fec6f6204220";
             MockedStatic<FriendCodeUtils> friendCodeUtils = mockStatic(FriendCodeUtils.class);
             given(FriendCodeUtils.generateCode()).willReturn(code);
-            doReturn(null).when(authService).findUserByCode(code);
+            given(userDao.selectOptionalUser(code)).willReturn(Optional.empty());
             given(passwordUtils.generateSalt()).willReturn(salt);
             given(jwtUtils.createLoginToken(
                 LoginTokenResponse.from(req.toEntity(code, hash, salt)))).willReturn(
@@ -79,33 +79,33 @@ class AuthServiceImplTest extends TestInitData {
             // give
             String identity = "3600000000";
             UserIdentityType type = UserIdentityType.KAKAO;
-            given(userRepository.findByUserIdentityAndUserIdentityType(identity, type))
+            given(userDao.selectOptionalUser(identity, type))
                 .willReturn(Optional.of(user));
 
             // when
             User response = authService.findUserByIdentity(identity, type);
 
             // then
-            Mockito.verify(userRepository, Mockito.times(1))
-                .findByUserIdentityAndUserIdentityType(identity, type);
+            Mockito.verify(userDao, Mockito.times(1))
+                .selectOptionalUser(identity, type);
             assertEquals(user.getUserId(), response.getUserId());
         }
 
         @Test
-        void 성공_아무것도_찾지_못해서_NULL_반환() {
+        void 실패_아무것도_찾지_못해서_예외_던짐() {
             // give
             String identity = "0000000000";
             UserIdentityType type = UserIdentityType.KAKAO;
-            given(userRepository.findByUserIdentityAndUserIdentityType(identity, type))
+            given(userDao.selectOptionalUser(identity, type))
                 .willReturn(Optional.empty());
 
             // when
-            User response = authService.findUserByIdentity(identity, type);
+            assertThrows(NotFoundExcetion.class,
+                () -> authService.findUserByIdentity(identity, type));
 
             // then
-            Mockito.verify(userRepository, Mockito.times(1))
-                .findByUserIdentityAndUserIdentityType(identity, type);
-            assertNull(response);
+            Mockito.verify(userDao, Mockito.times(1))
+                .selectOptionalUser(identity, type);
         }
     }
 
@@ -116,13 +116,13 @@ class AuthServiceImplTest extends TestInitData {
         void 성공_정상적으로_찾아서_유저_반환() {
             // give
             UUID id = UUID.fromString("00000000-0000-0000-0000-000000000000");
-            given(userRepository.findById(id)).willReturn(Optional.of(user));
+            given(userDao.selectUser(id)).willReturn(user);
 
             // when
             User response = authService.findUserByUuid(id);
 
             // then
-            Mockito.verify(userRepository, Mockito.times(1)).findById(id);
+            Mockito.verify(userDao, Mockito.times(1)).selectUser(id);
             assertEquals(user.getUserCode(), response.getUserCode());
         }
 
@@ -130,13 +130,13 @@ class AuthServiceImplTest extends TestInitData {
         void 실패_아무것도_찾지_못해서_예외_던짐() {
             // give
             UUID id = UUID.fromString("11111111-0000-0000-0000-000000000000");
-            given(userRepository.findById(id)).willReturn(Optional.empty());
+            given(userDao.selectUser(id)).willThrow(NotFoundExcetion.class);
 
             // when
-            assertThrows(NotFoundExcetion.class, () -> authService.disableUser(id));
+            assertThrows(NotFoundExcetion.class, () -> authService.findUserByUuid(id));
 
             // then
-            Mockito.verify(userRepository, Mockito.times(1)).findById(id);
+            Mockito.verify(userDao, Mockito.times(1)).selectUser(id);
         }
     }
 
@@ -154,28 +154,27 @@ class AuthServiceImplTest extends TestInitData {
                 user.getUserNickName(),
                 user.getUserCreatedAt()
             );
-            given(userRepository.findByUserCode(code)).willReturn(Optional.of(user));
+            given(userDao.selectOptionalUser(code)).willReturn(Optional.of(user));
 
             // when
             UserResponse response = authService.findUserByCode(code);
 
             // then
-            Mockito.verify(userRepository, Mockito.times(1)).findByUserCode(code);
+            Mockito.verify(userDao, Mockito.times(1)).selectOptionalUser(code);
             assertEquals(user.getUserId(), response.id());
         }
 
         @Test
-        void 성공_아무것도_찾지_못해서_NULL_반환() {
+        void 실패_아무것도_찾지_못해서_예외_던짐() {
             // give
             String code = "BBBBB";
-            given(userRepository.findByUserCode(code)).willReturn(Optional.empty());
+            given(userDao.selectOptionalUser(code)).willThrow(NotFoundExcetion.class);
 
             // when
-            UserResponse response = authService.findUserByCode(code);
+            assertThrows(NotFoundExcetion.class, () -> authService.findUserByCode(code));
 
             // then
-            Mockito.verify(userRepository, Mockito.times(1)).findByUserCode(code);
-            assertNull(response);
+            Mockito.verify(userDao, Mockito.times(1)).selectOptionalUser(code);
         }
     }
 
@@ -186,13 +185,13 @@ class AuthServiceImplTest extends TestInitData {
         void 성공_정상적으로_유저목록_반환함() {
             // give
             String[] codes = new String[]{"AAAAA"};
-            given(userRepository.findAllByUserCodeIn(codes)).willReturn(List.of(user));
+            given(userDao.selectAllUser(codes)).willReturn(List.of(user));
 
             // when
             List<UserListResponse> response = authService.findUsersByCodes(codes);
 
             // then
-            Mockito.verify(userRepository, Mockito.times(1)).findAllByUserCodeIn(codes);
+            Mockito.verify(userDao, Mockito.times(1)).selectAllUser(codes);
             assertEquals(1, response.size());
             assertEquals(user.getUserId(), response.get(0).id());
         }
@@ -201,13 +200,13 @@ class AuthServiceImplTest extends TestInitData {
         void 성공_해당하는_유저가_없어서_빈_리스트_반환함() {
             // give
             String[] codes = new String[]{};
-            given(userRepository.findAllByUserCodeIn(codes)).willReturn(List.of());
+            given(userDao.selectAllUser(codes)).willReturn(List.of());
 
             // when
             List<UserListResponse> response = authService.findUsersByCodes(codes);
 
             // then
-            Mockito.verify(userRepository, Mockito.times(1)).findAllByUserCodeIn(codes);
+            Mockito.verify(userDao, Mockito.times(1)).selectAllUser(codes);
             assertEquals(0, response.size());
         }
     }
@@ -220,14 +219,13 @@ class AuthServiceImplTest extends TestInitData {
             // give
             UUID id = UUID.fromString("00000000-0000-0000-0000-000000000000");
             String image = "changed.png";
-            doReturn(user).when(authService).findUserByUuid(id);
+            given(userDao.updateUserImage(id, image)).willReturn(user);
 
             // when
             authService.updateUserImage(id, image);
 
             // then
-            Mockito.verify(authService, Mockito.times(1)).findUserByUuid(id);
-            assertEquals(image, user.getUserImg());
+            Mockito.verify(userDao, Mockito.times(1)).updateUserImage(id, image);
         }
 
         @Test
@@ -235,13 +233,13 @@ class AuthServiceImplTest extends TestInitData {
             // give
             UUID id = UUID.fromString("11111111-0000-0000-0000-000000000000");
             String image = "changed.png";
-            doThrow(NotFoundExcetion.class).when(authService).findUserByUuid(id);
+            given(userDao.updateUserImage(id, image)).willThrow(NotFoundExcetion.class);
 
             // when
             assertThrows(NotFoundExcetion.class, () -> authService.updateUserImage(id, image));
 
             // then
-            Mockito.verify(authService, Mockito.times(1)).findUserByUuid(id);
+            Mockito.verify(userDao, Mockito.times(1)).updateUserImage(id, image);
         }
     }
 
@@ -253,14 +251,13 @@ class AuthServiceImplTest extends TestInitData {
             // give
             UUID id = UUID.fromString("00000000-0000-0000-0000-000000000000");
             String name = "진수";
-            doReturn(user).when(authService).findUserByUuid(id);
+            given(userDao.updateUserNickname(id, name)).willReturn(user);
 
             // when
             authService.updateUserNickname(id, name);
 
             // then
-            Mockito.verify(authService, Mockito.times(1)).findUserByUuid(id);
-            assertEquals(name, user.getUserNickName());
+            Mockito.verify(userDao, Mockito.times(1)).updateUserNickname(id, name);
         }
 
         @Test
@@ -268,13 +265,13 @@ class AuthServiceImplTest extends TestInitData {
             // give
             UUID id = UUID.fromString("11111111-0000-0000-0000-000000000000");
             String name = "진수";
-            doThrow(NotFoundExcetion.class).when(authService).findUserByUuid(id);
+            given(userDao.updateUserNickname(id, name)).willThrow(NotFoundExcetion.class);
 
             // when
             assertThrows(NotFoundExcetion.class, () -> authService.updateUserNickname(id, name));
 
             // then
-            Mockito.verify(authService, Mockito.times(1)).findUserByUuid(id);
+            Mockito.verify(userDao, Mockito.times(1)).updateUserNickname(id, name);
         }
     }
 
@@ -286,20 +283,13 @@ class AuthServiceImplTest extends TestInitData {
             // give
             UUID id = UUID.fromString("00000000-0000-0000-0000-000000000000");
             String password = "00000";
-            String salt = "21bd4149975f734e";
-            String hashedPassword = "8cb5219acebdb0e3453b91d9aa77b466b67dfb79ce08fc6a68730a5847a24bac";
-            doReturn(user).when(authService).findUserByUuid(id);
-            given(passwordUtils.generateSalt()).willReturn(salt);
-            given(passwordUtils.passwordHashing(password, salt)).willReturn(hashedPassword);
+            given(userDao.updateUserPassword(id, password)).willReturn(user);
 
             // when
             authService.updateUserPassword(id, password);
 
             // then
-            Mockito.verify(authService, Mockito.times(1)).findUserByUuid(id);
-            Mockito.verify(passwordUtils, Mockito.times(1)).passwordHashing(password, salt);
-            assertEquals(hashedPassword, user.getUserPasswd());
-            assertEquals(11, user.getUserTokenVersion());
+            Mockito.verify(userDao, Mockito.times(1)).updateUserPassword(id, password);
         }
 
         @Test
@@ -308,17 +298,16 @@ class AuthServiceImplTest extends TestInitData {
             UUID id = UUID.fromString("00000000-0000-0000-0000-000000000000");
             String password = "00000";
             String salt = "21bd4149975f734e";
-            doThrow(NotFoundExcetion.class).when(authService).findUserByUuid(id);
+            given(userDao.updateUserPassword(id, password)).willThrow(NotFoundExcetion.class);
 
             // when
             assertThrows(NotFoundExcetion.class,
                 () -> authService.updateUserPassword(id, password));
 
             // then
-            Mockito.verify(authService, Mockito.times(1)).findUserByUuid(id);
-            Mockito.verify(passwordUtils, Mockito.times(0)).passwordHashing(password, salt);
-            assertEquals(10, user.getUserTokenVersion());
+            Mockito.verify(userDao, Mockito.times(1)).updateUserPassword(id, password);
         }
+
     }
 
     @Nested
@@ -328,27 +317,26 @@ class AuthServiceImplTest extends TestInitData {
         void 성공_토큰_버전이_1_올라감() {
             // give
             UUID id = UUID.fromString("00000000-0000-0000-0000-000000000000");
-            doReturn(user).when(authService).findUserByUuid(id);
+            given(userDao.updateUserTokenVersion(id)).willReturn(user);
 
             // when
             authService.updateTokenVersion(id);
 
             // then
-            Mockito.verify(authService, Mockito.times(1)).findUserByUuid(id);
-            assertEquals(11, user.getUserTokenVersion());
+            Mockito.verify(userDao, Mockito.times(1)).updateUserTokenVersion(id);
         }
 
         @Test
         void 실패_유저를_찾지_못해_예외_던짐() {
             // give
             UUID id = UUID.fromString("11111111-0000-0000-0000-000000000000");
-            doThrow(NotFoundExcetion.class).when(authService).findUserByUuid(id);
+            given(userDao.updateUserTokenVersion(id)).willThrow(NotFoundExcetion.class);
 
             // when
             assertThrows(NotFoundExcetion.class, () -> authService.updateTokenVersion(id));
 
             // then
-            Mockito.verify(authService, Mockito.times(1)).findUserByUuid(id);
+            Mockito.verify(userDao, Mockito.times(1)).updateUserTokenVersion(id);
         }
     }
 
@@ -359,27 +347,27 @@ class AuthServiceImplTest extends TestInitData {
         void 성공_유저를_찾아_비활성화함() {
             // give
             UUID id = UUID.fromString("00000000-0000-0000-0000-000000000000");
-            doReturn(user).when(authService).findUserByUuid(id);
+            doNothing().when(userDao).deleteUser(id);
 
             // when
             authService.disableUser(id);
 
             // then
-            Mockito.verify(authService, Mockito.times(1)).findUserByUuid(id);
-            assertEquals(true, user.getIsDisable());
+            Mockito.verify(userDao, Mockito.times(1)).deleteUser(id);
         }
 
         @Test
         void 실패_유저를_찾지_못해_예외_던짐() {
             // give
             UUID id = UUID.fromString("11111111-0000-0000-0000-000000000000");
-            doThrow(NotFoundExcetion.class).when(authService).findUserByUuid(id);
+            doThrow(NotFoundExcetion.class).when(userDao).deleteUser(id);
 
             // when
             assertThrows(NotFoundExcetion.class, () -> authService.disableUser(id));
 
             // then
-            Mockito.verify(authService, Mockito.times(1)).findUserByUuid(id);
+            Mockito.verify(userDao, Mockito.times(1)).deleteUser(id);
         }
     }
+
 }

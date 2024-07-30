@@ -1,6 +1,7 @@
 package com.click.auth.service;
 
 import com.click.auth.TestInitData;
+import com.click.auth.domain.dao.UserDao;
 import com.click.auth.domain.dto.response.LoginTokenResponse;
 import com.click.auth.domain.dto.response.UserTokenResponse;
 import com.click.auth.exception.LoginExpirationException;
@@ -26,7 +27,7 @@ class TokenServiceImplTest extends TestInitData {
     @InjectMocks
     private TokenServiceImpl tokenService;
     @Mock
-    private AuthServiceImpl authService;
+    private UserDao userDao;
     @Mock
     private JwtUtils jwtUtils;
     @Mock
@@ -45,7 +46,7 @@ class TokenServiceImplTest extends TestInitData {
             LoginTokenResponse loginTokenResponse =
                 new LoginTokenResponse(user.getUserId(), user.getUserTokenVersion());
             given(jwtUtils.parseLoginToken(accessToken)).willReturn(loginTokenResponse);
-            given(authService.findUserByUuid(loginTokenResponse.uuid())).willReturn(user);
+            given(userDao.selectUser(loginTokenResponse.uuid())).willReturn(user);
             given(passwordUtils.passwordHashing(password, user.getUserSalt()))
                 .willReturn(hashedPassword);
             given(jwtUtils.createUserToken(user)).willReturn(loginToken);
@@ -54,8 +55,8 @@ class TokenServiceImplTest extends TestInitData {
             String response = tokenService.generateUserToken(accessToken, password);
 
             // then
-            Mockito.verify(authService, Mockito.times(1))
-                .findUserByUuid(loginTokenResponse.uuid());
+            Mockito.verify(userDao, Mockito.times(1))
+                .selectUser(loginTokenResponse.uuid());
             Mockito.verify(passwordUtils, Mockito.times(1))
                 .passwordHashing(password, user.getUserSalt());
             assertEquals(loginToken, response);
@@ -69,7 +70,7 @@ class TokenServiceImplTest extends TestInitData {
             LoginTokenResponse loginTokenResponse =
                 new LoginTokenResponse(user.getUserId(), user.getUserTokenVersion());
             given(jwtUtils.parseLoginToken(accessToken)).willReturn(loginTokenResponse);
-            given(authService.findUserByUuid(loginTokenResponse.uuid()))
+            given(userDao.selectUser(loginTokenResponse.uuid()))
                 .willThrow(NotFoundExcetion.class);
 
             // when
@@ -77,8 +78,8 @@ class TokenServiceImplTest extends TestInitData {
                 () -> tokenService.generateUserToken(accessToken, password));
 
             // then
-            Mockito.verify(authService, Mockito.times(1))
-                .findUserByUuid(loginTokenResponse.uuid());
+            Mockito.verify(userDao, Mockito.times(1))
+                .selectUser(loginTokenResponse.uuid());
             Mockito.verify(passwordUtils, Mockito.times(0))
                 .passwordHashing(password, user.getUserSalt());
         }
@@ -92,7 +93,7 @@ class TokenServiceImplTest extends TestInitData {
             LoginTokenResponse loginTokenResponse =
                 new LoginTokenResponse(user.getUserId(), 0);
             given(jwtUtils.parseLoginToken(accessToken)).willReturn(loginTokenResponse);
-            given(authService.findUserByUuid(loginTokenResponse.uuid())).willReturn(user);
+            given(userDao.selectUser(loginTokenResponse.uuid())).willReturn(user);
             given(passwordUtils.passwordHashing(password, user.getUserSalt()))
                 .willReturn(hashedPassword);
 
@@ -101,8 +102,8 @@ class TokenServiceImplTest extends TestInitData {
                 () -> tokenService.generateUserToken(accessToken, password));
 
             // then
-            Mockito.verify(authService, Mockito.times(1))
-                .findUserByUuid(loginTokenResponse.uuid());
+            Mockito.verify(userDao, Mockito.times(1))
+                .selectUser(loginTokenResponse.uuid());
             Mockito.verify(passwordUtils, Mockito.times(1))
                 .passwordHashing(password, user.getUserSalt());
             Mockito.verify(jwtUtils, Mockito.times(0)).parseUserToken(any());
@@ -117,7 +118,7 @@ class TokenServiceImplTest extends TestInitData {
             LoginTokenResponse loginTokenResponse =
                 new LoginTokenResponse(user.getUserId(), user.getUserTokenVersion());
             given(jwtUtils.parseLoginToken(accessToken)).willReturn(loginTokenResponse);
-            given(authService.findUserByUuid(loginTokenResponse.uuid())).willReturn(user);
+            given(userDao.selectUser(loginTokenResponse.uuid())).willReturn(user);
             given(passwordUtils.passwordHashing(password, user.getUserSalt()))
                 .willReturn(hashedPassword);
 
@@ -126,8 +127,8 @@ class TokenServiceImplTest extends TestInitData {
                 () -> tokenService.generateUserToken(accessToken, password));
 
             // then
-            Mockito.verify(authService, Mockito.times(1))
-                .findUserByUuid(loginTokenResponse.uuid());
+            Mockito.verify(userDao, Mockito.times(1))
+                .selectUser(loginTokenResponse.uuid());
             Mockito.verify(passwordUtils, Mockito.times(1))
                 .passwordHashing(password, user.getUserSalt());
             Mockito.verify(jwtUtils, Mockito.times(0)).parseUserToken(any());
