@@ -147,13 +147,6 @@ class AuthServiceImplTest extends TestInitData {
         void 성공_정상적으로_찾아서_유저_반환() {
             // give
             String code = "AAAAA";
-            UserResponse res = new UserResponse(
-                user.getUserId(),
-                user.getUserCode(),
-                user.getUserImg(),
-                user.getUserNickName(),
-                user.getUserCreatedAt()
-            );
             given(userDao.selectOptionalUser(code)).willReturn(Optional.of(user));
 
             // when
@@ -297,7 +290,6 @@ class AuthServiceImplTest extends TestInitData {
             // give
             UUID id = UUID.fromString("00000000-0000-0000-0000-000000000000");
             String password = "00000";
-            String salt = "21bd4149975f734e";
             given(userDao.updateUserPassword(id, password)).willThrow(NotFoundExcetion.class);
 
             // when
