@@ -7,6 +7,7 @@ import com.click.auth.domain.entity.User;
 import com.click.auth.domain.type.UserIdentityType;
 import com.click.auth.exception.NotFoundExcetion;
 import com.click.auth.util.JwtUtils;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,8 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public String generateLoginToken(String identity, UserIdentityType type, String image) {
-        User user = userDao.selectUser(identity, type);
+        User user = userDao.selectOptionalUser(identity, type)
+            .orElseThrow(() -> new NotFoundExcetion("USER"));
         if (image != null && !image.equals(user.getUserImg())) {
             userDao.updateUserImage(user.getUserId(), image);
         }
@@ -31,12 +33,12 @@ public class LoginServiceImpl implements LoginService {
     public SocialLoginResponse getUserTokenByKakao(String authCode) {
         KakaoTokenResponse kakaoToken = getKakaoToken(authCode);
         KakaoUserInfoResponse kakaoUserInfoResponse = getKakaoUserInfo(kakaoToken.access_token());
-        try {
-            userDao.selectUser(kakaoUserInfoResponse.id().toString(), UserIdentityType.KAKAO);
-            return SocialLoginResponse.from(kakaoUserInfoResponse, true);
-        } catch (NotFoundExcetion e) {
+        User user = userDao.selectOptionalUser(kakaoUserInfoResponse.id().toString(),
+            UserIdentityType.KAKAO).orElse(null);
+        if(user == null) {
             return SocialLoginResponse.from(kakaoUserInfoResponse, false);
         }
+        return SocialLoginResponse.from(kakaoUserInfoResponse, true);
     }
 
     public KakaoTokenResponse getKakaoToken(String authCode) {

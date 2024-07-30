@@ -40,7 +40,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public User findUserByIdentity(String identity, UserIdentityType type) {
-        return userDao.selectUser(identity, type);
+        return userDao.selectOptionalUser(identity, type).orElseThrow(() -> new NotFoundExcetion("USER"));
     }
 
     @Override
@@ -50,7 +50,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public UserResponse findUserByCode(String code) {
-        return UserResponse.from(userDao.selectUser(code));
+        return UserResponse.from(userDao.selectOptionalUser(code).orElse(null));
     }
 
     @Override
