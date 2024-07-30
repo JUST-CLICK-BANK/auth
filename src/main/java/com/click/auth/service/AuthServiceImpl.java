@@ -7,7 +7,7 @@ import com.click.auth.domain.dto.response.UserListResponse;
 import com.click.auth.domain.dto.response.UserResponse;
 import com.click.auth.domain.entity.User;
 import com.click.auth.domain.type.UserIdentityType;
-import com.click.auth.util.FriendCodeUtils;
+import com.click.auth.exception.NotFoundExcetion;
 import com.click.auth.util.JwtUtils;
 import com.click.auth.util.PasswordUtils;
 import jakarta.transaction.Transactional;
