@@ -7,6 +7,7 @@ import com.click.auth.exception.DeletedUserException;
 import com.click.auth.exception.NotFoundExcetion;
 import com.click.auth.util.PasswordUtils;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -29,14 +30,13 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User selectUser(String code) {
-        return userRepository.findByUserCode(code).orElseThrow(() -> new NotFoundExcetion("USER"));
+    public Optional<User> selectOptionalUser(String code) {
+        return userRepository.findByUserCode(code);
     }
 
     @Override
-    public User selectUser(String identity, UserIdentityType type) {
-        return userRepository.findByUserIdentityAndUserIdentityType(identity, type)
-            .orElseThrow(() -> new NotFoundExcetion("USER"));
+    public Optional<User> selectOptionalUser(String identity, UserIdentityType type) {
+        return userRepository.findByUserIdentityAndUserIdentityType(identity, type);
     }
 
     @Override

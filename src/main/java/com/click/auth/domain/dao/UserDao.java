@@ -3,6 +3,7 @@ package com.click.auth.domain.dao;
 import com.click.auth.domain.entity.User;
 import com.click.auth.domain.type.UserIdentityType;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface UserDao {
@@ -21,7 +22,7 @@ public interface UserDao {
      * @return 찾은 고객
      * @throws com.click.auth.exception.NotFoundExcetion 찾을 고객이 없을 경우
      */
-    User selectUser(String code);
+    Optional<User> selectOptionalUser(String code);
 
     /**
      * 소셜 계정 고유번호로 고객 정보를 가져옵니다.
@@ -30,7 +31,7 @@ public interface UserDao {
      * @return 찾은 고객
      * @throws com.click.auth.exception.NotFoundExcetion 찾을 고객이 없을 경우
      */
-    User selectUser(String identity, UserIdentityType type);
+    Optional<User> selectOptionalUser(String identity, UserIdentityType type);
 
     /**
      * 친구 코드들로 친구 목록을 가져옵니다.
