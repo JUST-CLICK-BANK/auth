@@ -32,4 +32,10 @@ public class ExceptionController {
     public String NotFoundException(NotFoundExcetion e) {
         return e.getMessage() + " NOT FOUND";
     }
+
+    @ExceptionHandler(DeletedUserException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String DeletedUserException(DeletedUserException e) {
+        return "DELETED USER";
+    }
 }

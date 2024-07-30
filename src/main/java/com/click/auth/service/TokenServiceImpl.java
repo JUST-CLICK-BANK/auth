@@ -1,5 +1,6 @@
 package com.click.auth.service;
 
+import com.click.auth.domain.dao.UserDao;
 import com.click.auth.domain.dto.response.LoginTokenResponse;
 import com.click.auth.domain.dto.response.UserTokenResponse;
 import com.click.auth.domain.entity.User;
@@ -14,14 +15,14 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class TokenServiceImpl implements TokenService {
 
-    private final AuthService authService;
+    private final UserDao userDao;
     private final JwtUtils jwtUtils;
     private final PasswordUtils passwordUtils;
 
     @Override
     public String generateUserToken(String accessToken, String password) {
         LoginTokenResponse loginToken = jwtUtils.parseLoginToken(accessToken);
-        User user = authService.findUserByUuid(loginToken.uuid());
+        User user = userDao.selectUser(loginToken.uuid());
         String hashedPassword = passwordUtils.passwordHashing(password, user.getUserSalt());
         if (!user.getUserPasswd().equals(hashedPassword)) {
             throw new PasswordMatchException();
