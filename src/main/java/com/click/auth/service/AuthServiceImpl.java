@@ -1,5 +1,7 @@
 package com.click.auth.service;
 
+import static com.click.auth.util.FriendCodeUtils.generateCode;
+
 import com.click.auth.domain.dao.UserDao;
 import com.click.auth.domain.dto.response.LoginTokenResponse;
 import com.click.auth.domain.dto.request.UserCreateRequest;
@@ -28,9 +30,9 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public String createUser(UserCreateRequest req) {
-        String code = FriendCodeUtils.generateCode();
+        String code = generateCode();
         while (findUserByCode(code) != null) {
-            code = FriendCodeUtils.generateCode();
+            code = generateCode();
         }
         User user = req.toEntity(code, passwordUtils);
         userDao.insertUser(user);
