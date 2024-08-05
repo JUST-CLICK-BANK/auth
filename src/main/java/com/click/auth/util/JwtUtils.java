@@ -35,6 +35,7 @@ public class JwtUtils {
             .claim("name", user.getUserNickName())
             .claim("createdAt", user.getUserCreatedAt().toString())
             .claim("rank", user.getUserCreditRank())
+            .claim("account", user.getUserMainAccount())
             .expiration(new Date(System.currentTimeMillis() + 3600000))
             .signWith(publicKey)
             .compact();

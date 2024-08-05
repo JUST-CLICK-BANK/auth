@@ -10,7 +10,8 @@ public record UserTokenResponse(
     String img,
     String name,
     String createdAt,
-    Integer rank
+    Integer rank,
+    String account
 ) {
 
     static public UserTokenResponse from(Claims claims) {
@@ -20,7 +21,8 @@ public record UserTokenResponse(
             claims.get("img", String.class),
             claims.get("name", String.class),
             claims.get("createdAt", String.class),
-            claims.get("rank", Integer.class)
+            claims.get("rank", Integer.class),
+            claims.get("account", String.class)
         );
     }
 }

@@ -11,7 +11,8 @@ public record UserCreateRequest(
     UserIdentityType type,
     String nickname,
     String passwd,
-    String image
+    String image,
+    String account
 ) {
 
     public User toEntity(String code, PasswordUtils passwordUtils) {
@@ -28,7 +29,8 @@ public record UserCreateRequest(
             700,
             LocalDateTime.now(),
             1,
-            false
+            false,
+            account
         );
     }
     public User toEntity(String code, String hashedPassword, String salt) {
@@ -44,7 +46,8 @@ public record UserCreateRequest(
             700,
             LocalDateTime.now(),
             1,
-            false
+            false,
+            account
         );
     }
 }

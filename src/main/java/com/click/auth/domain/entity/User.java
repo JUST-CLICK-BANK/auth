@@ -57,6 +57,9 @@ public class User {
     @Column(name = "USER_DISABLE", nullable = false)
     private Boolean isDisable;
 
+    @Column(name = "USER_MAIN_ACCOUNT")
+    private String userMainAccount;
+
 
     public void setPassword(String password, String salt) {
         userPasswd = password;
