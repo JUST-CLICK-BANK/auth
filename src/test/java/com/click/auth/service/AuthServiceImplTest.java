@@ -49,7 +49,8 @@ class AuthServiceImplTest extends TestInitData {
                 UserIdentityType.KAKAO,
                 "수진",
                 "000000",
-                "image.png"
+                "image.png",
+                "1234"
             );
             String code = "AAAAA";
             String hash = "7edd3bf09fdc20c7c93d0a74700a31d85486f95ee849ebaf776ea30d3108e24b";
