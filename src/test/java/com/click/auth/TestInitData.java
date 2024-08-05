@@ -41,7 +41,8 @@ public class TestInitData {
             700,
             LocalDateTime.now().minusDays(1),
             10,
-            false
+            false,
+            "12341234"
         );
     }
 }

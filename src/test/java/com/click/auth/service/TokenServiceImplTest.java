@@ -148,7 +148,8 @@ class TokenServiceImplTest extends TestInitData {
                 user.getUserImg(),
                 user.getUserNickName(),
                 user.getUserCreatedAt().toString(),
-                user.getUserCreditRank()
+                user.getUserCreditRank(),
+                user.getUserMainAccount()
             );
             given(jwtUtils.parseUserToken(userToken)).willReturn(userTokenResponse);
 
