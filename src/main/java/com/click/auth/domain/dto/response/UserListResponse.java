@@ -8,7 +8,8 @@ public record UserListResponse(
     UUID id,
     String code,
     String img,
-    String name
+    String name,
+    String account
 ) {
 
     public static UserListResponse from(User user) {
@@ -16,7 +17,8 @@ public record UserListResponse(
             user.getUserId(),
             user.getUserCode(),
             user.getUserImg(),
-            user.getUserNickName()
+            user.getUserNickName(),
+            user.getUserMainAccount()
         );
     }
 }

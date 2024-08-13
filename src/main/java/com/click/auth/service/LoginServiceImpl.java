@@ -7,7 +7,6 @@ import com.click.auth.domain.entity.User;
 import com.click.auth.domain.type.UserIdentityType;
 import com.click.auth.exception.NotFoundExcetion;
 import com.click.auth.util.JwtUtils;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
