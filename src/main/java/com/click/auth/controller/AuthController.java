@@ -6,6 +6,7 @@ import com.click.auth.domain.dto.response.UserListResponse;
 import com.click.auth.domain.dto.response.UserResponse;
 import com.click.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,6 +25,7 @@ public class AuthController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public String createUser(@RequestBody UserCreateRequest req) {
         return authService.createUser(req);
     }
