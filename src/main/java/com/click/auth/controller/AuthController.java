@@ -48,9 +48,9 @@ public class AuthController {
     @PutMapping("/{id}/main-account")
     public void updateMainAccount(
         @PathVariable("id") UUID id,
-        @RequestBody String req
+        @RequestBody UserUpdateRequest req
     ) {
-        authService.updateMainAccount(id, req);
+        authService.updateMainAccount(id, req.data());
     }
 
     // 프로필 사진 갱신
