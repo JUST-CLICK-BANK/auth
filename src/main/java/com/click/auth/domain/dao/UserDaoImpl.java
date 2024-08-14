@@ -65,6 +65,13 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    public User updateMainAccount(UUID id, String account) {
+        User user = selectUser(id);
+        user.setAccount(account);
+        return userRepository.save(user);
+    }
+
+    @Override
     public User updateUserImage(UUID id, String image) {
         User user = selectUser(id);
         user.setImage(image);
