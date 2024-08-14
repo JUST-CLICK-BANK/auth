@@ -97,5 +97,6 @@ public class User {
         userCreditRank = null;
         userTokenVersion = null;
         isDisable = true;
+        userMainAccount = null;
     }
 }

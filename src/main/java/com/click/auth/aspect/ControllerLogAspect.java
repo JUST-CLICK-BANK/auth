@@ -18,11 +18,12 @@ import org.springframework.stereotype.Component;
 public class ControllerLogAspect {
 
     @Around("controller()")
-    public void logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
+    public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
         long startTime = System.currentTimeMillis();
         Object proceed = joinPoint.proceed();
         long endTime = System.currentTimeMillis();
         log.info("### {} seconds in {}", (double)(endTime - startTime)/1000, joinPoint.getSignature().toShortString());
+        return proceed;
     }
 
     @Before("controller()")
@@ -40,12 +41,6 @@ public class ControllerLogAspect {
         if (returnValue != null) {
             log.info("\t- {}", returnValue.toString());
         }
-    }
-
-    @AfterThrowing(pointcut = "controller()", throwing = "e")
-    public void afterControllerThrowing(JoinPoint joinPoint, Exception e) {
-        log.error("### Error in - {}", joinPoint.getSignature().toShortString());
-        log.error("\t{}", e.getMessage());
     }
 
     @Pointcut("within(com.click.auth.controller.*)")
