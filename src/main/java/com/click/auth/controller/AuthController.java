@@ -21,7 +21,7 @@ public class AuthController {
 
     @GetMapping("/version")
     public String getVersion() {
-        return "v1.1";
+        return "v1.2.0";
     }
 
     @PostMapping
