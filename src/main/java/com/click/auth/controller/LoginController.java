@@ -16,6 +16,7 @@ public class LoginController {
 
     private final LoginService loginService;
 
+    // 자동 로그인 토큰 발급
     @GetMapping("/login/token")
     public String getLoginToken(
         @RequestParam("identity") String identity,
@@ -25,6 +26,7 @@ public class LoginController {
         return loginService.generateLoginToken(identity, type, image);
     }
 
+    // 카카오 유저 토큰 파싱
     @GetMapping("/login/kakao")
     public SocialLoginResponse getUserTokenByKakao(
         @RequestParam(value = "code") String kakaoCode,

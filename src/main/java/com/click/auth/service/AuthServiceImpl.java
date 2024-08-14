@@ -42,7 +42,8 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public User findUserByIdentity(String identity, UserIdentityType type) {
-        return userDao.selectOptionalUser(identity, type).orElseThrow(() -> new NotFoundExcetion("USER"));
+        return userDao.selectOptionalUser(identity, type)
+            .orElseThrow(() -> new NotFoundExcetion("USER"));
     }
 
     @Override
@@ -59,6 +60,11 @@ public class AuthServiceImpl implements AuthService {
     public List<UserListResponse> findUsersByCodes(String[] codes) {
         List<User> allByUserCode = userDao.selectAllUser(codes);
         return allByUserCode.stream().map(UserListResponse::from).toList();
+    }
+
+    @Override
+    public void updateMainAccount(UUID id, String account) {
+        userDao.updateMainAccount(id, account);
     }
 
     @Override
