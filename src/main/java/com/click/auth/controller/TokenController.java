@@ -12,6 +12,7 @@ public class TokenController {
 
     private final TokenService tokenService;
 
+    // 유저 토큰 발급
     @GetMapping
     public String getUserToken(
         @RequestParam("token") String token,
@@ -20,6 +21,7 @@ public class TokenController {
         return tokenService.generateUserToken(token, password);
     }
 
+    // 유저 토큰 파싱
     @GetMapping("/{userToken}")
     public UserTokenResponse getUserTokenInfo(@PathVariable("userToken") String userToken) {
         return tokenService.parseUserToken(userToken);
