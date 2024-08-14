@@ -22,7 +22,7 @@ public class AuthController {
     // 서버 버전 확인
     @GetMapping("/version")
     public String getVersion() {
-        return "v1.1.2";
+        return "v1.2.0";
     }
 
     // 유저 생성
