@@ -21,6 +21,8 @@ public interface AuthService {
 
     List<UserListResponse> findUsersByCodes(String[] codes);
 
+    void updateMainAccount(UUID id, String account);
+
     void updateUserImage(UUID id, String image);
 
     void updateUserNickname(UUID id, String name);

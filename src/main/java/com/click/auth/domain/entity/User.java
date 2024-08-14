@@ -66,6 +66,10 @@ public class User {
         userSalt = salt;
     }
 
+    public void setAccount(String account) {
+        userMainAccount = account;
+    }
+
     public void setImage(String image) {
         userImg = image;
     }

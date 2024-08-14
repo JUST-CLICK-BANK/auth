@@ -58,6 +58,14 @@ public interface UserDao {
     User updateUserPassword(UUID id, String password);
 
     /**
+     * 고객의 대표 계좌를 변경합니다.
+     * @param id 대상 고객의 UUID
+     * @param account 설정할 계좌번호
+     * @return <i>update</i>가 완료된 고객
+     */
+    User updateMainAccount(UUID id, String account);
+
+    /**
      * 고객의 프로필 사진을 변경합니다.
      * @param id 대상 고객의 UUID
      * @param image 새 프로필 사진

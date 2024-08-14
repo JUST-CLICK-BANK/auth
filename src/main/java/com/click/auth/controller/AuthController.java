@@ -21,7 +21,7 @@ public class AuthController {
 
     @GetMapping("/version")
     public String getVersion() {
-        return "v1.1";
+        return "v1.1.2";
     }
 
     @PostMapping
@@ -40,6 +40,16 @@ public class AuthController {
         return authService.findUsersByCodes(codes);
     }
 
+    // 대표계좌 설정
+    @PutMapping("/{id}/main-account")
+    public void updateMainAccount(
+        @PathVariable("id") UUID id,
+        @RequestBody String req
+    ) {
+        authService.updateMainAccount(id, req);
+    }
+
+    // 프로필 사진 갱신
     @PutMapping("/{id}/image")
     public void updateUserImage(
         @PathVariable("id") UUID id,
