@@ -45,12 +45,12 @@ public class AuthController {
     }
 
     // 대표계좌 설정
-    @PutMapping("/{id}/main-account")
+    @PutMapping("/{userCode}/main-account")
     public void updateMainAccount(
-        @PathVariable("id") UUID id,
+        @PathVariable("userCode") String userCode,
         @RequestBody UserUpdateRequest req
     ) {
-        authService.updateMainAccount(id, req.data());
+        authService.updateMainAccount(userCode, req.data());
     }
 
     // 프로필 사진 갱신
