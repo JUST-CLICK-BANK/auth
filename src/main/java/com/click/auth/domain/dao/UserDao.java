@@ -59,11 +59,11 @@ public interface UserDao {
 
     /**
      * 고객의 대표 계좌를 변경합니다.
-     * @param id 대상 고객의 UUID
+     * @param userCode 대상 고객의 친구코드
      * @param account 설정할 계좌번호
      * @return <i>update</i>가 완료된 고객
      */
-    User updateMainAccount(UUID id, String account);
+    User updateMainAccount(String userCode, String account);
 
     /**
      * 고객의 프로필 사진을 변경합니다.

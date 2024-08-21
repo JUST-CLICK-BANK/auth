@@ -65,8 +65,8 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User updateMainAccount(UUID id, String account) {
-        User user = selectUser(id);
+    public User updateMainAccount(String userCode, String account) {
+        User user = selectOptionalUser(userCode).orElseThrow(() -> new NotFoundExcetion("USER"));
         user.setAccount(account);
         return userRepository.save(user);
     }

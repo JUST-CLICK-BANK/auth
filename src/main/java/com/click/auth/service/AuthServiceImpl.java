@@ -63,8 +63,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void updateMainAccount(UUID id, String account) {
-        userDao.updateMainAccount(id, account);
+    public void updateMainAccount(String userCode, String account) {
+        userDao.updateMainAccount(userCode, account);
     }
 
     @Override
